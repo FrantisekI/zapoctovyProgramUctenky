@@ -14,7 +14,7 @@ user will provide receipt image that it will be read and converted to record it 
 from getImage import getImage
 from imageToText import imageToText
 from sortNames import sortNames
-# from database import readFoodNames
+from database import readFoodNames
 # from assignTicketToDb import assignTicketToDB
 
 
@@ -116,7 +116,9 @@ KLIENT
 
 
 
-    # foodNames = readFoodNames()
+    foodNames = readFoodNames()
+    total = float(names["total"].split(" ")[0])
+    print(foodNames)
     # foodAndPrice = readFoodNames(receiptText, foodNames)
     # assignTicketToDB(foodAndPrice, date)
 
