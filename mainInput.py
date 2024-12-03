@@ -10,10 +10,10 @@ user will provide receipt image that it will be read and converted to record it 
 # then will call database and return what types of food are there
 # will do api call to a AI with json input which will read the input text and return how much of which food was bought
 # will save this data to a database
-
+from json import loads
 from getImage import getImage
 from imageToText import imageToText
-from sortNames import sortNames
+from textAnalyzer import sortNames
 from database import readFoodNames
 # from assignTicketToDb import assignTicketToDB
 
@@ -69,8 +69,6 @@ Cena
 KLIENT
 +420 776 200 517
 """
-    # names = sortNames(receiptText)
-
     names = """
 {
   "items": [
@@ -113,11 +111,13 @@ KLIENT
   "total": "313.50 Kč"
 }
 """
-
-
+    names = sortNames(receiptText)
+    names = loads(names)
+    print(names)
 
     foodNames = readFoodNames()
-    total = float(names["total"].split(" ")[0])
+    print(names["total"])
+    print(names["total"].split(" ")[0])
     print(foodNames)
     # foodAndPrice = readFoodNames(receiptText, foodNames)
     # assignTicketToDB(foodAndPrice, date)

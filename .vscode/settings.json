@@ -13,5 +13,9 @@
             "database": "uctenkydb",
             "username": "root"
         }
+    ],
+    "cSpell.words": [
+        "Gclient",
+        "Groq"
     ]
 }
