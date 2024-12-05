@@ -1,6 +1,8 @@
 from groq import Groq
 import os
 from dotenv import load_dotenv
+import json
+import jsonschema
 
 load_dotenv()
 
@@ -60,7 +62,39 @@ Chybové stavy:
         stream=False,
         stop=None,
     )
-    print(completion.choices[0].message.content)
+
+
+    schema = {
+        "type": "object",
+        "required": ["items", "total", "store"],
+        "properties": {
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "required": ["name", "total_price"],
+                    "properties": {
+                        "name": {"type": "string"},
+                        "total_price": {"type": "string"},
+                        "unit_price": {"type": ["string", "null"]}
+                    }
+                }
+            },
+            "total": {"type": ["string", "integer"]},
+            "store": {"type": "string"}
+        }
+    }
+    try:
+        textOutput = json.loads(completion.choices[0].message.content)
+        jsonschema.validate(textOutput, schema)
+    except jsonschema.ValidationError as e:
+        print(e.message)
+        return None
+
+    print(textOutput)
+    i = json.validate(textOutput)
+
+    return textOutput
 
 if __name__ == "__main__":
     sortNames("")
