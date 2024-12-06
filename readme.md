@@ -6,8 +6,8 @@
 - create virtual environment
 - install requirements
 - create environment variables:
-    - GROQ_API_KEY (at https://console.groq.com/keys)
-    - OCR_API_KEY (at https://ocr.space/OCRAPI/confirmation)
+    - GROQ_API_KEY (from https://console.groq.com/keys)
+    - OCR_API_KEY (from https://ocr.space/OCRAPI/confirmation)
     - DB_HOST = "127.0.0.1" / get your remote one
     - DB_USER = "root" / custom one
     - DB_PASSWORD (password for your database)
