@@ -1,0 +1,12 @@
+Nápadem na můj zápočtový program jest:
+
+V základu to bude pythoní konzolová aplikace do které bude uživatel v průběhu (tj. pokaždé když aplikaci zapne) zadávat obrázky účtenek. 
+A data z účtenek se budou ukládat pro další analyzování.
+
+jak bude vypadat kód:
+pro převod obrázku na text bude použita OCR API
+pro analyzování tohoto textu bude použita API na umělou inteligenci
+pro ukládání dat bude použita MySQL databáze
+    v databázi budou uloženy produkty s cenou stejné produkty budou mít stejné jméno
+    pak k uživateli bude přiřazeno několik účtenek a k účtenkám bude spolu s datem přiřazeno několik produktů
+

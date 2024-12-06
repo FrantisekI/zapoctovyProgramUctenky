@@ -89,7 +89,6 @@ Chybové stavy:
         jsonschema.validate(textOutput, schema)
     except jsonschema.ValidationError as e:
         print(e.message)
-        return None
 
     print(textOutput)
     i = json.validate(textOutput)
