@@ -6,15 +6,40 @@ import jsonschema # type: ignore
 
 load_dotenv()
 
-def sortNames(receiptText):
-
+def sortNames(receiptText: str, model: str) -> dict:
+    """
+    This function takes a receipt text as input, sends it to the Groq API for analysis, 
+    and returns structured data in JSON format.
+    Identifies what are names and prices of products.
+    
+    schema = {
+        "type": "object",
+        "required": ["items", "total", "store"],
+        "properties": {
+            "items": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "required": ["name", "total_price"],
+                    "properties": {
+                        "name": {"type": "string"},
+                        "total_price": {"type": "string"},
+                        "unit_price": {"type": ["string", "null"]}
+                    }
+                }
+            },
+            "total": {"type": ["string", "integer"]},
+            "store": {"type": "string"}
+        }
+    }
+    """
     Groq_key = os.environ.get("GROQ_API_KEY")
     Gclient = Groq(
         api_key=Groq_key,
     )
 
     completion = Gclient.chat.completions.create(
-        model="llama3-groq-70b-8192-tool-use-preview",
+        model=model,
         messages=[
             {
                 "role": "system",
@@ -54,12 +79,15 @@ Chybové stavy:
             {
                 "role": "user",
                 "content": receiptText
-            }
+            },
         ],
         temperature=1,
         max_tokens=1024,
         top_p=1,
         stream=False,
+        
+        # if model doesn't supoort json_object, just comment this line
+        response_format={"type": "json_object"}, 
         stop=None,
     )
 
@@ -85,14 +113,18 @@ Chybové stavy:
         }
     }
     try:
-        textOutput = json.loads(completion.choices[0].message.content)
-        jsonschema.validate(textOutput, schema)
+        textOutput = completion.choices[0].message.content
+        if type(textOutput) != dict:
+            start = textOutput.find('{')
+            end = textOutput.rfind('}') + 1
+            textOutput = json.loads(textOutput[start:end])
+        i = jsonschema.validate(textOutput, schema)
+            
     except jsonschema.ValidationError as e:
         print(e.message)
-        textOutput = {}
+        return {}
 
     print(textOutput)
-    i = json.validate(textOutput)
 
     return textOutput
 
