@@ -2,7 +2,7 @@ from groq import Groq
 import os
 from dotenv import load_dotenv
 import json
-import jsonschema
+import jsonschema # type: ignore
 
 load_dotenv()
 
@@ -89,6 +89,7 @@ Chybové stavy:
         jsonschema.validate(textOutput, schema)
     except jsonschema.ValidationError as e:
         print(e.message)
+        textOutput = {}
 
     print(textOutput)
     i = json.validate(textOutput)
