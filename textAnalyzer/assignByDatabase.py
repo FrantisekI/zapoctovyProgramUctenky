@@ -1,4 +1,4 @@
-def assignByDatabase(sortedNamesJson, DatabaseObject):
+def assignByDatabase(sortedNamesJson: dict, DatabaseObject: object):
     schema = {  # jen abych vedel, jak to vypada
         "type": "object",
         "required": ["items", "total", "store"],
@@ -19,5 +19,11 @@ def assignByDatabase(sortedNamesJson, DatabaseObject):
             "store": {"type": "string"}
         }
     }
+    for item in sortedNamesJson['items']:
+        name = item['name']
+        category = getCategory(name, DatabaseObject)
 
+def getCategory(name, DatabaseObject):
+    pass
+    
     
