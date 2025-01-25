@@ -38,7 +38,9 @@ words = [
     "dog", "dogs", "dogma",     # another similar set
     "car", "care", "career",    # another similar set
     "computer", "computation",  # technical words
-    "mouse", "house", "spouse"  # rhyming words
+    "mouse", "house", "spouse", # rhyming words
+    "mice", "ice", "dice",      # another rhyming set
+    "sport",
 ]
 
 # Insert words
@@ -46,17 +48,17 @@ for word in words:
     trie.insert(word)
 
 # Demonstration of searches
-print("Searching for 'cat':", trie.search("cat"))
-print("Searching for 'cats':", trie.search("cats"))
-print("Starts with 'ca':", trie.starts_with("ca"))
-print("Searching for 'car':", trie.search("car"))
-print("Starts with 'comp':", trie.starts_with("comp"))
+# print("Searching for 'cat':", trie.search("cat"))
+# print("Searching for 'cats':", trie.search("cats"))
+# print("Starts with 'ca':", trie.starts_with("ca"))
+# print("Searching for 'car':", trie.search("car"))
+# print("Starts with 'comp':", trie.starts_with("comp"))
 
 def trie_to_mermaid(trie):
     from collections import deque
     node_queue = deque([(trie.root, 0, None, "")])
     visited = {trie.root: 0}
-    mermaid_lines = ["graph LR"]
+    mermaid_lines = ["graph TD"]
 
     while node_queue:
         node, node_id, parent_id, char = node_queue.popleft()
@@ -69,4 +71,6 @@ def trie_to_mermaid(trie):
 
     return "\n".join(mermaid_lines)
 
-print(trie_to_mermaid(trie))
+with open("testingAndStuff/trie.md", "w") as f:
+    f.write('```mermaid\n' + 
+        trie_to_mermaid(trie) + '\n```')
