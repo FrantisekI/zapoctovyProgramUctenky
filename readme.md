@@ -59,7 +59,6 @@ erDiagram
 
 
     SHOPS ||--o{ BOUGHT_ITEMS : refers_to
-    SHOPS ||--o{ CUSTOM_PRODUCT_NAMES : includes
     PRODUCT_CLASSES ||--o{ BOUGHT_ITEMS : categorized_by
     PRODUCT_CLASSES ||--o{ CUSTOM_PRODUCT_NAMES : includes
     CUSTOM_PRODUCT_NAMES ||--o{ SIGNATURES : has

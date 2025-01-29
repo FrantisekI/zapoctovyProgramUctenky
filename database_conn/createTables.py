@@ -1,0 +1,57 @@
+import mysql.connector #type: ignore
+
+def create_tables(conn):
+    # Connect to MySQL server
+    # conn = connect()
+
+    try:
+        cursor = conn.cursor()
+        
+        # Create Users table
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS Users (
+            user_id INT AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(50) NOT NULL,
+            email VARCHAR(100),
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        """)
+
+        # Create Receipts table
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS Receipts (
+            receipt_id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT,
+            purchase_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            total_price DECIMAL(10,2),
+            store_name VARCHAR(100),
+            FOREIGN KEY (user_id) REFERENCES Users(user_id)
+        );
+        """)
+
+        # Create ReceiptItems table
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS ReceiptItems (
+            item_id INT AUTO_INCREMENT PRIMARY KEY,
+            receipt_id INT,
+            user_id INT,
+            product_name VARCHAR(100) NOT NULL,
+            quantity DECIMAL(10,3),
+            unit_price DECIMAL(10,2),
+            price_per_unit VARCHAR(50),
+            total_price DECIMAL(10,2),
+            FOREIGN KEY (receipt_id) REFERENCES Receipts(receipt_id),
+            FOREIGN KEY (user_id) REFERENCES Users(user_id)
+        );
+        """)
+
+        print("Tables created successfully!")
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+
+    finally:
+        conn.commit()
+        cursor.close()
+        conn.close()
+
