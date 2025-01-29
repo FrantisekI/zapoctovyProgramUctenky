@@ -2,6 +2,10 @@ class TrieNode:
     def __init__(self):
         self.children = {}
         self.is_end_of_word = False
+        self.last_difference = None
+        global id_counter
+        self.id = id_counter
+        id_counter += 1
 
 class Trie:
     def __init__(self):
@@ -12,6 +16,7 @@ class Trie:
         for char in word:
             if char not in node.children:
                 node.children[char] = TrieNode()
+            node.children[char].last_difference = node
             node = node.children[char]
         node.is_end_of_word = True
     
@@ -30,7 +35,7 @@ class Trie:
                 return False
             node = node.children[char]
         return True
-
+id_counter = 0
 # Create trie with similar and different words
 trie = Trie()
 words = [
@@ -56,18 +61,19 @@ for word in words:
 
 def trie_to_mermaid(trie):
     from collections import deque
-    node_queue = deque([(trie.root, 0, None, "")])
+    node_queue = deque([(trie.root, 0, None, "", None)])
     visited = {trie.root: 0}
     mermaid_lines = ["graph TD"]
 
     while node_queue:
-        node, node_id, parent_id, char = node_queue.popleft()
+        node, node_id, parent_id, char, diff = node_queue.popleft()
         if parent_id is not None:
             mermaid_lines.append(f"{parent_id}-->{node_id}({char})")
+            mermaid_lines.append(f"{node_id}--o {diff}")
         for c, child in node.children.items():
             if child not in visited:
                 visited[child] = len(visited)
-                node_queue.append((child, visited[child], node_id, c))
+                node_queue.append((child, visited[child], node_id, c, child.last_difference.id))
 
     return "\n".join(mermaid_lines)
 

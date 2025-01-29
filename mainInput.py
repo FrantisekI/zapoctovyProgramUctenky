@@ -14,7 +14,7 @@ from json import loads
 from getImage import getImage
 from imageToText import imageToText
 from textAnalyzer import sortNames
-from database import readFoodNames
+from database_conn.__main__ import readFoodNames
 # from assignTicketToDb import assignTicketToDB
 
 

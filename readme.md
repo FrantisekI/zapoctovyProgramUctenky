@@ -34,10 +34,6 @@
 
 ```mermaid
 erDiagram
-    DATES {
-        DATE date
-        FLOAT total_price
-    }
     SHOPS {
         STRING name
     }
@@ -47,18 +43,25 @@ erDiagram
     }
     CUSTOM_PRODUCT_NAMES {
         STRING name
-        STRING some_data_for_FuzzyWuzzy
+    }
+    SIGNATURES {
+        INT id_class
+        INT hash_index
+        BIGINT hash_value
     }
     BOUGHT_ITEMS {
         FLOAT amount
         STRING units
         FLOAT price
+        DATES date
+        TIME time
     }
 
-    DATES ||--o{ BOUGHT_ITEMS : refers_to
+
     SHOPS ||--o{ BOUGHT_ITEMS : refers_to
     SHOPS ||--o{ CUSTOM_PRODUCT_NAMES : includes
     PRODUCT_CLASSES ||--o{ BOUGHT_ITEMS : categorized_by
     PRODUCT_CLASSES ||--o{ CUSTOM_PRODUCT_NAMES : includes
+    CUSTOM_PRODUCT_NAMES ||--o{ SIGNATURES : has
     
 ```
