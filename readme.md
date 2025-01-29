@@ -39,7 +39,6 @@ erDiagram
     }
     PRODUCT_CLASSES {
         STRING name
-        INT approximate_period
     }
     CUSTOM_PRODUCT_NAMES {
         STRING name
@@ -53,8 +52,7 @@ erDiagram
         FLOAT amount
         STRING units
         FLOAT price
-        DATES date
-        TIME time
+        DATETIME date_time
     }
 
 

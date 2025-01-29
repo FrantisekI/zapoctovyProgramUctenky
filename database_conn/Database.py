@@ -22,36 +22,48 @@ class Database:
             self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS Shops (
                 shop_id INT AUTO_INCREMENT PRIMARY KEY,
-                shop_name VARCHAR(100) NOT NULL
+                shop_name VARCHAR(30) NOT NULL
             );
             """)
             
             self.cursor.execute("""
-            CREATE TABLE IF NOT EXISTS BoughtItems (
+            CREATE TABLE IF NOT EXISTS Product_Classes (
+                class_id INT AUTO_INCREMENT PRIMARY KEY,
+                class_name VARCHAR(30) NOT NULL,
+            );              
+            """)
+            
+            self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS Bought_Items (
                 receipt_id INT AUTO_INCREMENT PRIMARY KEY,
                 amount DECIMAL(10,2),
-                units VARCHAR(100),
+                units VARCHAR(30),
                 price DECIMAL(10,2),
                 date_time DATETIME,
-                CREATE INDEX idx_date ON BoughtItems(date_time),
-                CREATE INDEX idx_shop ON Shops(shop_id)
+                CREATE INDEX idx_date ON Bought_Items(date_time),
+                CREATE INDEX idx_shop ON Shops(shop_id),
+                CREATE INDEX idx_class ON Product_Classes(class_id),
+            );
+            """)
+            
+            self.cursor.execute("""
+            CREATE TABLE IF NOT EXISTS Custom_Product_Names (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(100) NOT NULL,
+                CREATE INDEX idx_name ON Product_Classes(class_id),
             );
             """)
 
             self.cursor.execute("""
-            CREATE TABLE IF NOT EXISTS ReceiptItems (
-                item_id INT AUTO_INCREMENT PRIMARY KEY,
-                receipt_id INT,
-                user_id INT,
-                product_name VARCHAR(100) NOT NULL,
-                quantity DECIMAL(10,3),
-                unit_price DECIMAL(10,2),
-                price_per_unit VARCHAR(50),
-                total_price DECIMAL(10,2),
-                FOREIGN KEY (receipt_id) REFERENCES Receipts(receipt_id),
-                FOREIGN KEY (user_id) REFERENCES Users(user_id)
+            CREATE TABLE IF NOT EXISTS Signatures (
+                id_name INT,
+                hash_index INT,
+                hash_value BIGINT,
+                PRIMARY KEY (id_name, hash_index),
+                FOREIGN KEY (id_name) REFERENCES Custom_Product_Names(name),
             );
             """)
+
 
             print("Tables created successfully!")
 
@@ -62,20 +74,21 @@ class Database:
             self.conn.commit()
 
     def readFoodNames(self, user_id = 1):
-        self.cursor.execute("SELECT product_name FROM ReceiptItems \
-                            WHERE user_id = %s GROUP BY product_name", (user_id,))
+        self.cursor.execute("""SELECT product_name FROM ReceiptItems 
+            WHERE user_id = %s GROUP BY product_name;""",
+            (user_id,))
         foodNames = self.cursor.fetchall()
         return foodNames
 
     def create_user(self, username, email):
-        self.cursor.execute("INSERT INTO Users (username, email) VALUES (%s, %s)", (username, email))
+        self.cursor.execute("INSERT INTO Users (username, email) VALUES (%s, %s);", (username, email))
         self.conn.commit()
 
     def create_receipt(self, user_id, total_price, store_name):
-        self.cursor.execute("INSERT INTO Receipts (user_id, total_price, store_name) VALUES (%s, %s, %s)", (user_id, total_price, store_name))
+        self.cursor.execute("INSERT INTO Receipts (user_id, total_price, store_name) VALUES (%s, %s, %s);", (user_id, total_price, store_name))
         self.conn.commit()
 
     def create_receipt_item(self, receipt_id, user_id, product_name, quantity, unit_price, price_per_unit, total_price):
-        self.cursor.execute("INSERT INTO ReceiptItems (receipt_id, user_id, product_name, quantity, unit_price, price_per_unit, total_price) VALUES (%s, %s, %s, %s, %s, %s, %s)", 
+        self.cursor.execute("INSERT INTO ReceiptItems (receipt_id, user_id, product_name, quantity, unit_price, price_per_unit, total_price) VALUES (%s, %s, %s, %s, %s, %s, %s);", 
                             (receipt_id, user_id, product_name, quantity, unit_price, price_per_unit, total_price))
         self.conn.commit()
