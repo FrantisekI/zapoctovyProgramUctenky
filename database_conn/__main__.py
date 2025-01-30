@@ -3,7 +3,10 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-from database_conn.Database import Database
+if __name__ == "__main__":
+    from Database import Database
+else:
+    from database_conn.Database import Database
 
 
 
@@ -22,6 +25,7 @@ def connectToDB():
 if __name__ == "__main__":
     DB = connectToDB()
     DB.create_tables()
+    DB.add.config("shop_name", "Walmart")
 
     # create_user("John", "")
     # create_receipt(1, 100.00, "Walmart")

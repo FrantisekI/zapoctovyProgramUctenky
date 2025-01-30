@@ -17,6 +17,10 @@ from textAnalyzer.sortNames import sortNames
 from database_conn.__main__ import connectToDB
 # from assignTicketToDb import assignTicketToDB
 
+def create_database():
+    DB = connectToDB()
+    DB.create_tables()
+    DB.create_indexes()
 
 def main():
     # receiptPath, date = getImage()
@@ -69,12 +73,10 @@ Cena
 KLIENT
 +420 776 200 517
 """
-    DB = connectToDB()
-    DB.create_tables()
-    # DB.create_indexes()
     
-    # foodAndPrice = readFoodNames(receiptText, foodNames)
-    # assignTicketToDB(foodAndPrice, date)
+    DB = connectToDB()
+    
+    
 
 
 if __name__ == "__main__":
