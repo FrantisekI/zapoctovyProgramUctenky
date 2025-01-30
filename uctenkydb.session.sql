@@ -2,4 +2,7 @@
 -- SHOW TABLES;
 
 
-SELECT * FROM receiptitems;
+-- SELECT * FROM receiptitems;
+
+DROP DATABASE uctenkydb;
+CREATE DATABASE uctenkydb;

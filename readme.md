@@ -53,6 +53,9 @@ erDiagram
         STRING units
         FLOAT price
         DATETIME date_time
+
+        INT shop_id
+        INT product_id
     }
 
 
