@@ -1,5 +1,5 @@
 import unittest
-from database_conn.Database import Database
+from database_conn import Database
 from datetime import datetime
 
 class TestDatabase(unittest.TestCase):
@@ -27,27 +27,27 @@ class TestDatabase(unittest.TestCase):
         # self.db.close()
 
     def test_delete_shop_(self):
-        self.db.select_one_shop(self.shop_id)
+        print(self.db.select_one_shop(self.shop_id))
         self.db.delete_shop_cascade(self.shop_id)
         self.assertIsNone(self.db.cursor.fetchone())
 
     def test_delete_product_class(self):
-        self.db.select_one_product_class(self.product_class_id)
+        print(self.db.select_one_product_class(self.product_class_id))
         self.db.delete_product_class_cascade(self.product_class_id)
         self.assertIsNone(self.db.cursor.fetchone())
 
     def test_delete_bought_item(self):
-        self.db.select_one_bought_item(self.bought_id)
+        print(self.db.select_one_bought_item(self.bought_id))
         self.db.delete_bought_item(self.bought_id)
         self.assertIsNone(self.db.cursor.fetchone())
 
     def test_delete_custom_product_name(self):
-        self.db.select_one_custom_product_name(self.custom_name_id)
+        print(self.db.select_one_custom_product_name(self.custom_name_id))
         self.db.delete_custom_product_name_cascade(self.custom_name_id)
         self.assertIsNone(self.db.cursor.fetchone())
 
     def test_delete_signature(self):
-        self.db.select_one_signature(self.custom_name_id, 12345)
+        print(self.db.select_one_signature(self.custom_name_id, 12345))
         self.db.delete_signature(self.custom_name_id, 12345)
         self.assertIsNone(self.db.cursor.fetchone())
 

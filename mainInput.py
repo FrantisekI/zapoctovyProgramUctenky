@@ -14,7 +14,7 @@ from json import loads
 from getImage import getImage
 from imageToText import imageToText
 from textAnalyzer.sortNames import sortNames
-from database_conn.__main__ import connectToDB
+from database_conn import connectToDB
 # from assignTicketToDb import assignTicketToDB
 
 def create_database():

@@ -17,7 +17,7 @@ class Database:
 
     def __del__(self):
         self.conn.close()
-        print("Database connection closed.")
+        print("DB closed.")
         
     def close(self):
         self.conn.close()
