@@ -4,7 +4,6 @@ from datetime import datetime
 
 class TestDatabase(unittest.TestCase):
     def setUp(self):
-        print(1)
         self.db = Database()
         # Insert test data
         self.shop_id = self.db.insert_shop("Test Shop")
@@ -15,47 +14,41 @@ class TestDatabase(unittest.TestCase):
         self.signature = self.db.insert_signature(self.custom_name_id, 12345, 111111)
 
     def tearDown(self):
-        print(2)
+        try:
+            self.db.cursor.fetchall()  # Clear any unread results
+        except Exception:
+            pass
         self.db.cursor.execute("DELETE FROM Signatures;")
         self.db.cursor.execute("DELETE FROM Custom_Product_Names;")
         self.db.cursor.execute("DELETE FROM Bought_Items;")
         self.db.cursor.execute("DELETE FROM Product_Classes;")
         self.db.cursor.execute("DELETE FROM Shops;")
         self.db.conn.commit()
-        self.db.close()
+        # self.db.close()
 
-    def test_delete_shop(self):
-        print(3)
-        self.db.cursor.execute("SELECT * FROM Shops WHERE shop_id = %s;", (self.shop_id,))
-        self.db.delete_shop(self.shop_id)
+    def test_delete_shop_(self):
+        self.db.select_one_shop(self.shop_id)
+        self.db.delete_shop_cascade(self.shop_id)
         self.assertIsNone(self.db.cursor.fetchone())
 
     def test_delete_product_class(self):
-        print(4)
-        self.db.delete_product_class(self.product_class_id)
-        self.db.cursor.execute("SELECT * FROM Product_Classes WHERE class_id = %s;", 
-                             (self.product_class_id,))
+        self.db.select_one_product_class(self.product_class_id)
+        self.db.delete_product_class_cascade(self.product_class_id)
         self.assertIsNone(self.db.cursor.fetchone())
 
     def test_delete_bought_item(self):
-        print(5)
-        # self.db.delete_bought_item(self.bought_id)
         self.db.select_one_bought_item(self.bought_id)
+        self.db.delete_bought_item(self.bought_id)
         self.assertIsNone(self.db.cursor.fetchone())
 
     def test_delete_custom_product_name(self):
-        print(6)
-        self.db.delete_custom_product_name(self.custom_name_id)
-        self.db.cursor.execute("SELECT * FROM Custom_Product_Names WHERE custom_product_id = %s;", 
-                             (self.custom_name_id,))
+        self.db.select_one_custom_product_name(self.custom_name_id)
+        self.db.delete_custom_product_name_cascade(self.custom_name_id)
         self.assertIsNone(self.db.cursor.fetchone())
 
     def test_delete_signature(self):
-        print(7)
+        self.db.select_one_signature(self.custom_name_id, 12345)
         self.db.delete_signature(self.custom_name_id, 12345)
-        self.db.cursor.execute("""SELECT * FROM Signatures 
-                                WHERE id_custom_name = %s AND hash_index = %s;""", 
-                             (self.custom_name_id, 12345))
         self.assertIsNone(self.db.cursor.fetchone())
 
 if __name__ == '__main__':

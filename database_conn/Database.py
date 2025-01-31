@@ -16,9 +16,12 @@ class Database:
         self.cursor = self.conn.cursor()
 
     def __del__(self):
-        self.cursor.close()
         self.conn.close()
         print("Database connection closed.")
+        
+    def close(self):
+        self.conn.close()
+        print("Database connection closed. via close()")
 
     def create_tables(self):
         try:
@@ -53,8 +56,9 @@ class Database:
                 date_time DATETIME,
                 shop_id INT,    -- Foreign key referencing Shops
                 product_id INT, -- Foreign key referencing Products
-                FOREIGN KEY (shop_id) REFERENCES Shops(shop_id),
-                FOREIGN KEY (product_id) REFERENCES Product_Classes(class_id)
+                FOREIGN KEY (shop_id) REFERENCES Shops(shop_id) ON DELETE CASCADE,
+                FOREIGN KEY (product_id) REFERENCES Product_Classes(class_id) 
+                ON DELETE CASCADE
             );
             """)
             
@@ -63,7 +67,8 @@ class Database:
                 custom_product_id INT AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(100) NOT NULL,
                 product_id INT, -- Foreign key referencing Product_Classes
-                FOREIGN KEY (product_id) REFERENCES Product_Classes(class_id)
+                FOREIGN KEY (product_id) REFERENCES Product_Classes(class_id) 
+                ON DELETE CASCADE
             );
             """)
 
@@ -73,7 +78,8 @@ class Database:
                 hash_index INT,
                 hash_value BIGINT,
                 PRIMARY KEY (id_custom_name, hash_index),
-                FOREIGN KEY (id_custom_name) REFERENCES Custom_Product_Names(custom_product_id)
+                FOREIGN KEY (id_custom_name) REFERENCES Custom_Product_Names(custom_product_id) 
+                ON DELETE CASCADE
             );
             """)
 
@@ -172,13 +178,13 @@ class Database:
         """, (key,))
         self.conn.commit()
         
-    def delete_shop(self, shop_id: int):
+    def delete_shop_cascade(self, shop_id: int):
         self.cursor.execute("""
         DELETE FROM Shops WHERE shop_id = %s;
         """, (shop_id,))
         self.conn.commit()
         
-    def delete_product_class(self, class_id: int):
+    def delete_product_class_cascade(self, class_id: int):
         self.cursor.execute("""
         DELETE FROM Product_Classes WHERE class_id = %s;
         """, (class_id,))
@@ -190,7 +196,7 @@ class Database:
         """, (bought_id,))
         self.conn.commit()
         
-    def delete_custom_product_name(self, custom_product_id: int):
+    def delete_custom_product_name_cascade(self, custom_product_id: int):
         self.cursor.execute("""
         DELETE FROM Custom_Product_Names WHERE custom_product_id = %s;
         """, (custom_product_id,))
