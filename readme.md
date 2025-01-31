@@ -65,3 +65,4 @@ erDiagram
     CUSTOM_PRODUCT_NAMES ||--o{ SIGNATURES : has
     
 ```
+one particular source I would point out in my MinHash research is: [From Min-Hashing to Locality Sensitive Hashing: The complete process](https://medium.com/@omkarsoak/from-min-hashing-to-locality-sensitive-hashing-the-complete-process-b88b298d71a1)

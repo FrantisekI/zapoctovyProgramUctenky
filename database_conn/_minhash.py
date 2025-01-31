@@ -15,7 +15,7 @@ def _create_shingles(self: 'Database', text: str, shingle_size: int = 3) -> set[
         shingles.add(shingle)
     return shingles
 
-def _create_signature(self: 'Database', shingles: set[str], number_of_functions: int = 5) -> list[int]:
+def _create_signature(self: 'Database', shingles: set[str], number_of_functions: int = 6) -> list[int]:
     primarySeed = 123456
     seed(primarySeed)
     seeds = []
@@ -46,6 +46,13 @@ def hash_insert_custom_name(self: 'Database', customName: str, classId: int) -> 
     shingles = self._create_shingles(customName)
     signature = self._create_signature(shingles)
     return self._store_custom_name_with_shingles(customName, signature, classId)
+
+def find_similar_custom_names(self: 'Database', inputName: str, threshold: float = 0.5) -> list[str]:
+    signature = self._create_signature(self._create_shingles(inputName))
+    
+    
+    
+    
     
         
         
