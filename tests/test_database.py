@@ -50,6 +50,11 @@ class TestDatabase(unittest.TestCase):
         print(self.db.select_one_signature(self.custom_name_id, 12345))
         self.db.delete_signature(self.custom_name_id, 12345)
         self.assertIsNone(self.db.cursor.fetchone())
+        
+    def test_minhash(self):
+        shingles = self.db.hash_insert_custom_name("Hello World!", self.product_class_id)
+        print(shingles)
+        self.assertEqual(1, 1)
 
 if __name__ == '__main__':
     unittest.main()

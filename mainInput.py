@@ -14,11 +14,11 @@ from json import loads
 from getImage import getImage
 from imageToText import imageToText
 from textAnalyzer.sortNames import sortNames
-from database_conn import connectToDB
+from database_conn import Database
 # from assignTicketToDb import assignTicketToDB
 
 def create_database():
-    DB = connectToDB()
+    DB = Database()
     DB.create_tables()
     DB.create_indexes()
 
@@ -74,7 +74,7 @@ KLIENT
 +420 776 200 517
 """
     
-    DB = connectToDB()
+    DB = Database()
     
     
 
