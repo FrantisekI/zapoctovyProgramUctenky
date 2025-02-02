@@ -48,13 +48,13 @@ def insert_custom_product_name(self, name: str, product_id: int) -> int:
     """, (name, product_id))
     self.conn.commit()
     
-    self.cursor.execute("SELECT LAST_INSERT_ID();")
-    custom_product_id = self.cursor.fetchone()[0]
-    return custom_product_id
+    return self.cursor.lastrowid
 
-def insert_signature(self, id_custom_name: int, hash_index: int, hash_value: int):
+def insert_band(self, id_custom_name: int, band_id: int, band_hash: int) -> int:
     self.cursor.execute("""
-    INSERT INTO Signatures (id_custom_name, hash_index, hash_value)
+    INSERT INTO Bands (id_custom_name, band_id, band_hash)
     VALUES (%s, %s, %s);
-    """, (id_custom_name, hash_index, hash_value))
+    """, (id_custom_name, band_id, band_hash))
     self.conn.commit()
+    
+    return self.cursor.lastrowid

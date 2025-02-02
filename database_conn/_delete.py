@@ -28,8 +28,8 @@ def delete_custom_product_name_cascade(self, custom_product_id: int):
     """, (custom_product_id,))
     self.conn.commit()
     
-def delete_signature(self, id_custom_name: int, hash_index: int):
+def delete_band(self, id_custom_name: int, band_id: int, band_hash: int):
     self.cursor.execute("""
-    DELETE FROM Signatures WHERE id_custom_name = %s AND hash_index = %s;
-    """, (id_custom_name, hash_index))
+    DELETE FROM Bands WHERE id_custom_name = %s AND band_id = %s AND band_hash = %s;
+    """, (id_custom_name, band_id, band_hash))
     self.conn.commit()

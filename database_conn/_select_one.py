@@ -29,8 +29,9 @@ def select_one_custom_product_name(self, custom_product_id: int) -> str:
     """, (custom_product_id,))
     return self.cursor.fetchone()[0]
 
-def select_one_signature(self, id_custom_name: int, hash_index: int) -> int:
+def select_one_band(self, id_custom_name: int, band_id: int, band_hash: int) -> int:
     self.cursor.execute("""
-    SELECT hash_value FROM Signatures WHERE id_custom_name = %s AND hash_index = %s;
-    """, (id_custom_name, hash_index))
+    SELECT id_custom_name FROM Bands WHERE 
+    id_custom_name = %s AND band_id = %s AND band_hash = %s;
+    """, (id_custom_name, band_id, band_hash))
     return self.cursor.fetchone()[0]

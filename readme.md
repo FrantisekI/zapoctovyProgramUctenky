@@ -1,4 +1,3 @@
-
 # Zapoctovy program uctenky
 - goal of this project is to store bought items from pictures of receipts
 
@@ -42,27 +41,31 @@ erDiagram
     }
     CUSTOM_PRODUCT_NAMES {
         STRING name
+        INDEX product_id
+        INDEX custom_product_id
     }
-    SIGNATURES {
-        INT id_class
-        INT hash_index
-        BIGINT hash_value
+    BANDS {
+        INT id_custom_name
+        INT band_id
+        BIGINT band_hash
+        INDEX band_id-band_hash
     }
     BOUGHT_ITEMS {
         FLOAT amount
         STRING units
         FLOAT price
         DATETIME date_time
-
         INT shop_id
         INT product_id
+        INDEX date_time
+        INDEX shop_id
+        INDEX product_id
     }
-
 
     SHOPS ||--o{ BOUGHT_ITEMS : refers_to
     PRODUCT_CLASSES ||--o{ BOUGHT_ITEMS : categorized_by
     PRODUCT_CLASSES ||--o{ CUSTOM_PRODUCT_NAMES : includes
-    CUSTOM_PRODUCT_NAMES ||--o{ SIGNATURES : has
+    CUSTOM_PRODUCT_NAMES ||--o{ BANDS : has
     
 ```
 one particular source I would point out in my MinHash research is: [From Min-Hashing to Locality Sensitive Hashing: The complete process](https://medium.com/@omkarsoak/from-min-hashing-to-locality-sensitive-hashing-the-complete-process-b88b298d71a1)

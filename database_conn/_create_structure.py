@@ -49,11 +49,12 @@ def create_tables(self):
         """)
 
         self.cursor.execute("""
-        CREATE TABLE IF NOT EXISTS Signatures (
+        CREATE TABLE IF NOT EXISTS Bands (
             id_custom_name INT,
-            hash_index INT,
-            hash_value BIGINT,
-            PRIMARY KEY (id_custom_name, hash_index),
+            band_id INT,
+            band_hash BIGINT,
+            PRIMARY KEY (id_custom_name, band_id, band_hash),
+            INDEX (band_id, band_hash),
             FOREIGN KEY (id_custom_name) REFERENCES Custom_Product_Names(custom_product_id) 
             ON DELETE CASCADE
         );
@@ -72,7 +73,7 @@ def create_indexes(self):
         CREATE INDEX idx_bought_shop ON Bought_Items(shop_id);
         CREATE INDEX idx_bought_product ON Bought_Items(product_id);
         CREATE INDEX idx_custom_class ON Custom_Product_Names(product_id);
-        CREATE INDEX idx_signature_custom ON Custom_Product_Names(id);
+        CREATE INDEX idx_signature_custom ON Custom_Product_Names(custom_product_id);
         """)
     except mysql.connector.Error as err:
         print("err")
