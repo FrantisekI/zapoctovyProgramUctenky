@@ -84,6 +84,7 @@ class TestDatabase(unittest.TestCase):
             "Flibbertigibbetisticallyinclined", "Flibbertigibbetistically", "Inclined", # combined words
             "Whatchamacallitandthingamajig", "Whatchamacallit", "Thingamajig", # combined words
             "Kerfuffleandhullabaloo", "Kerfuffle", "Hullabaloo", # combined words
+            "boots", 
         ]
         
         for word in words:
