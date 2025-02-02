@@ -61,7 +61,7 @@ def hash_and_insert_custom_name(self: 'Database', customName: str, classId: int)
     # print(bands)
     return self._store_custom_name_with_bands(customName, bands, classId)
 
-def find_candidates(self: 'Database', inputName: str) -> list[str]:
+def find_candidates(self: 'Database', inputName: str) -> list[int, str]:
     bands = self._marge_functions_to_compute_bands(inputName)
     keys = tuple([(id, band) for id, band in enumerate(bands)])
     # print(keys)

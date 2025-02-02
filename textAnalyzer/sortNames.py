@@ -24,12 +24,14 @@ def sortNames(receiptText: str, model: str) -> dict:
                     "properties": {
                         "name": {"type": "string"},
                         "total_price": {"type": "string"},
+                        "amount": {"type": ["string", "null"]},
                         "unit_price": {"type": ["string", "null"]}
                     }
                 }
             },
             "total": {"type": ["string", "integer"]},
-            "store": {"type": "string"}
+            "store": {"type": "string"},
+            "date": {"type": ["string", "null"]}
         }
     }
     """
@@ -39,47 +41,81 @@ def sortNames(receiptText: str, model: str) -> dict:
     )
 
     completion = Gclient.chat.completions.create(
-        model=model,
-        messages=[
-            {
-                "role": "system",
-                "content": """
-Analyzuj tento text účtenky a vrať strukturovaná data v následujícím JSON formátu:
+    model=model,
+    messages=[
+        {
+            "role": "system",
+            "content": """
+# ÚČEL
+Extrahuj strukturovaná data z textu účtenky do JSON formátu.
+
+# VÝSTUPNÍ FORMÁT
 {
     "items": [
         {
             "name": "název produktu",
-            "total_price": "celková cena v Kč",
-            "unit_price": "cena za jednotku (pokud existuje, jinak null)"
+            "total_price": "celková cena",
+            "amount": "množství",
+            "units": "jednotka"
         }
     ],
-    "total": "celková částka účtenky",
-    "store": "název obchodu"
+    "total": "celková částka",
+    "store": "název obchodu",
+    "date": "datum nákupu ve formátu DD.MM.YYYY",
 }
 
-Pravidla pro zpracování:
-1. Ignoruj veškeré informace o prodejně, času, datu a kreditech
-2. Pro položky prodávané na váhu:
-   - "total_price" je celková zaplacená částka
-   - "unit_price" obsahuje cenu za jednotku včetně jednotky (např. "29.90 Kč/kg")
-3. Pro běžné položky:
-   - "total_price" je uvedená cena
-   - "unit_price" je null
-4. Všechny ceny musí být ve formátu s desetinnou tečkou a jednotkou "Kč"
-5. Zachovej přesné názvy produktů jak jsou uvedeny na účtence
-6. Mezi produkty se může nacházet i řádek s počtem kreditů, ten ignoruj, nepiš místo něj nic, jen ho vynech
+# PRAVIDLA ZPRACOVÁNÍ
 
-Chybové stavy:
-- Pokud nelze určit cenu nebo název, danou položku přeskoč
-- Pokud nelze určit celkovou částku, vrať null v "total"
-- Pokud nelze určit název obchodu, vrať PRODEJNA v "store"
+## Obecná pravidla:
+- Zachovej přesně původní názvy produktů
+- Všechny ceny převeď na formát s desetinnou tečkou a "Kč"
+- Ignoruj informace o věrnostních bodech/kreditech
+- Ignoruj marketingové texty a slevové akce
+- Všechna desetinná čísla zaokrouhli na dvě desetinná místa
 
+## Specifická pravidla pro položky:
+1. Vážené zboží:
+   - amount: uveď bez jednotky, ty napiš do units (např. 0.95)
+   - total_price: celková zaplacená částka
+   - units: cena za jednotku (např. "Kč/kg")
+
+2. Kusové zboží:
+   - amount: počet kusů jako číslo
+   - total_price: celková cena za všechny kusy
+   - units: jednotka (např. "Kč/ks")
+
+# ZPRACOVÁNÍ CHYB
+- Chybějící cena/název: přeskoč položku
+- Chybějící celková částka: vrať null v "total"
+- Chybějící název obchodu: použij "PRODEJNA"
+- Chybějící datum/čas: vrať null v příslušném poli
+
+# PŘÍKLADY SPRÁVNÉHO VÝSTUPU
+{
+    "items": [
+        {
+            "name": "Rohlík tukový",
+            "total_price": 2.90,
+            "amount": 1,
+            "unit_price": "Kč/ks"
+        },
+        {
+            "name": "Banány",
+            "total_price": 37.90, 
+            "amount": 0.95,
+            "units": "Kč/kg"
+        }
+    ],
+    "total": 40.80,
+    "store": "Potraviny U Nováků",
+    "date": "28.02.2025",
+}
 """
             },
             {
                 "role": "user",
                 "content": receiptText
-            },
+            }
         ],
         temperature=1,
         max_tokens=1024,
@@ -103,13 +139,15 @@ Chybové stavy:
                     "required": ["name", "total_price"],
                     "properties": {
                         "name": {"type": "string"},
-                        "total_price": {"type": "string"},
-                        "unit_price": {"type": ["string", "null"]}
+                        "total_price": {"type": "number", "multipleOf": 0.01},
+                        "amount": {"type": "number", "multipleOf": 0.01},
+                        "units": {"type": "string"}
                     }
                 }
             },
-            "total": {"type": ["string", "integer"]},
-            "store": {"type": "string"}
+            "total": {"type": "number", "multipleOf": 0.01},
+            "store": {"type": "string"},
+            "date": {"type": ["string", "null"]}
         }
     }
     try:
