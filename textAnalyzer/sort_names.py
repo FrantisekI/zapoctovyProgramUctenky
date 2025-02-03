@@ -6,7 +6,8 @@ import jsonschema # type: ignore
 
 load_dotenv()
 
-def sortNames(receiptText: str, model: str) -> dict:
+def sortNames(receiptText: str) -> dict:
+    groq_model = os.environ.get("GROQ_MODEL")
     """
     This function takes a receipt text as input, sends it to the Groq API for analysis, 
     and returns structured data in JSON format.
@@ -41,7 +42,7 @@ def sortNames(receiptText: str, model: str) -> dict:
     )
 
     completion = Gclient.chat.completions.create(
-    model=model,
+    model=groq_model,
     messages=[
         {
             "role": "system",

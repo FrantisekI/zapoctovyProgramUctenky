@@ -35,3 +35,9 @@ def select_one_band(self, id_custom_name: int, band_id: int, band_hash: int) -> 
     id_custom_name = %s AND band_id = %s AND band_hash = %s;
     """, (id_custom_name, band_id, band_hash))
     return self.cursor.fetchone()[0]
+
+def select_one_get_class_from_custom_name(self, custom_product_id: int) -> int:
+    self.cursor.execute("""
+    SELECT product_id FROM Custom_Product_Names WHERE custom_product_id = %s;
+    """, (custom_product_id,))
+    return self.cursor.fetchone()[0]

@@ -13,7 +13,8 @@ user will provide receipt image that it will be read and converted to record it 
 from json import loads
 from getImage import getImage
 from imageToText import imageToText
-from textAnalyzer.sortNames import sortNames
+from textAnalyzer.sort_names import sortNames
+from textAnalyzer import analyzeText
 from database_conn import Database
 # from assignTicketToDb import assignTicketToDB
 
@@ -73,8 +74,8 @@ Cena
 KLIENT
 +420 776 200 517
 """
-    
     DB = Database()
+    analyzeText(receiptText, DB)
     
     
 
