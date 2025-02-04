@@ -74,6 +74,7 @@ Extrahuj strukturovaná data z textu účtenky do JSON formátu.
 - Ignoruj informace o věrnostních bodech/kreditech
 - Ignoruj marketingové texty a slevové akce
 - Všechna desetinná čísla zaokrouhli na dvě desetinná místa
+- Názvy obchodů piš co nejjednodušeji, např. "Albert", "Tesco", "Lidl" - bez adresy nebo dalších informací
 
 ## Specifická pravidla pro položky:
 1. Vážené zboží:
@@ -88,7 +89,7 @@ Extrahuj strukturovaná data z textu účtenky do JSON formátu.
 
 # ZPRACOVÁNÍ CHYB
 - Chybějící cena/název: přeskoč položku
-- Chybějící celková částka: vrať null v "total"
+- Chybějící celková částka: vrať 0 v "total"
 - Chybějící název obchodu: použij "PRODEJNA"
 - Chybějící datum/čas: vrať null v příslušném poli
 

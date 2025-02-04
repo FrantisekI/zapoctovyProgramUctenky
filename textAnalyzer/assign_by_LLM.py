@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from database_conn import Database
 
-def find_by_AI(wordsToAssign: list[tuple[str, int]], DatabaseObject: 'Database') -> list[tuple[str, int, dict[str, str] | None, str]]:
+def find_by_AI(wordsToAssign: list[tuple[str, int]], DatabaseObject: 'Database') -> list[tuple[str, int, set[tuple[int, str]] | None, str]]:
     """
     as an input it takes list of tuples with:
     name, order

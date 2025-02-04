@@ -26,9 +26,9 @@ def create_tables(self):
         self.cursor.execute("""
         CREATE TABLE IF NOT EXISTS Bought_Items (
             bought_id INT AUTO_INCREMENT PRIMARY KEY,
-            amount DECIMAL(10,2),
+            amount INT,
             units VARCHAR(30),
-            price DECIMAL(10,2),
+            price INT,
             date_time DATETIME,
             shop_id INT,    -- Foreign key referencing Shops
             product_id INT, -- Foreign key referencing Products
@@ -59,9 +59,7 @@ def create_tables(self):
             ON DELETE CASCADE
         );
         """)
-        
-        self.insert_product_class("error")
-        self.hash_and_insert_custom_name("Error classifying", self.cursor.lastrowid)
+    
 
         print("Tables created successfully!")
 

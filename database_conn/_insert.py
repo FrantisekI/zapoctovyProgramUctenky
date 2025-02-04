@@ -28,9 +28,12 @@ def insert_product_class(self, class_name: str) -> int:
     class_id = self.cursor.fetchone()[0]
     return class_id
 
-def insert_bought_item(self, amount: float, units: str, price: float, date_time, shop_id: int, product_id: int) -> int:
-    amount = round(amount, 2)
-    price = round(price, 2)
+
+def insert_bought_item(self, amount: int, units: str, price: int, date_time, shop_id: int, product_id: int) -> int:
+    '''Inserts a bought item into the database. with parameters you see in the function signature.
+    
+    amount and price are in cents. - to get in czech crowns, divide by 100.'''
+    print(amount, units, price, date_time, shop_id, product_id)
     self.cursor.execute("""
     INSERT INTO Bought_Items (amount, units, price, date_time, shop_id, product_id)
     VALUES (%s, %s, %s, %s, %s, %s);

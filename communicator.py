@@ -1,14 +1,28 @@
 import copy
+from textAnalyzer.assign_by_database import assign_by_database
+from datetime import datetime
+import os
 class Communicator:
     def __init__(self, db):
         self.db = db
+    def get_image_path(self):
+        image_path = input("Enter image path: ").strip().strip('"')
+        new_filename = f"receipt_{datetime.now().strftime('%Y%m%d_%H%M%S')}{os.path.splitext(image_path)[1]}"
+        new_path = os.path.join("images", new_filename)
+        with open(image_path, 'rb') as src, open(new_path, 'wb') as dst:
+            dst.write(src.read())
+            
+        print(f"Saved image to: {new_path}")
+        return new_path
+    
+    
     def pretty_print(self, store_info_tuple, assigned_products):
         store, date, total = store_info_tuple
         
         store_lines = [
             f"A | Store: {store}",
             f"B | Date: {date}",
-            f"C | Total: {total}"
+            f"C | Total: {total/100:.2f}"
         ]
         max_store_line_length = max(len(line) for line in store_lines)
         store_divider = '+' + '-' * (max_store_line_length + 2) + '+'
@@ -37,8 +51,8 @@ class Communicator:
             data_row = [
                 f"{idx}.",
                 product['name'],
-                f"{product['total_price']:.2f}",
-                str(product['amount']),
+                f"{product['total_price']/100:.2f}",
+                f"{product['amount']/100:.2f}",
                 product['units'],
                 class_names,
                 source
@@ -80,6 +94,7 @@ class Communicator:
             print("DB = Assigned by database")
             print("AI = Assigned by AI")
             print("AI (Not Found) = Assigned by AI but not found in database")
+            print("User = Assigned by user")
             ai_indices = ', '.join(ai_rows)
             print(f"\nNote: Rows {ai_indices} need verification (assigned by AI).")
 
@@ -89,8 +104,13 @@ class Communicator:
         elif flag == 20:
             return "AI"
         elif flag == 21:
-            return "AI (Not Found)"
+            return "AI (Will Create New Class)"
+        elif flag == 30:
+            return "User (Existing Class)"
+        elif flag == 31:
+            return "User (New Class)"
         return "Unknown"
+    
     def edit_receipt(self, store_info_tuple, assigned_products):
         edited_store = list(store_info_tuple)
         edited_products = copy.deepcopy(assigned_products)
@@ -100,13 +120,31 @@ class Communicator:
             choice = input("\nEnter item to edit (A-C/Number) or 'done': ").strip().lower()
             
             if choice == 'done':
-                return tuple(edited_store), edited_products
+                # Check if all edited products have a class length of 1
+                all_classes_single = all(len(product['class']) == 1 for product in edited_products if product['class'] is not None)
+                if all_classes_single:
+                    try:
+                        _ = datetime.strptime(edited_store[1], "%d.%m.%Y").date()
+                    except ValueError:
+                        print("Invalid date format! Please use DD.MM.YYYY.")
+                        continue
+                    return tuple(edited_store), edited_products
+                else:
+                    print("All products must have exactly one class assigned.")
+                    continue
             
             # Edit store information
             if choice in ['a', 'b', 'c']:
-                field_names = ['Store name', 'Date', 'Total']
+                field_names = ['Store name', 'Date in format DD.MM.YYYY', 'Total']
                 idx = ord(choice) - ord('a')
                 new_val = input(f"New {field_names[idx]}: ")
+                if idx == 1:
+                    try:
+                        _ = datetime.strptime(new_val , "%d.%m.%Y").date()
+                    except ValueError:
+                        print("Invalid date format! Please use DD.MM.YYYY.")
+                        continue
+                    
                 edited_store[idx] = new_val
                 continue
             
@@ -131,12 +169,12 @@ class Communicator:
             product['name'] = input("New name: ").strip()
         elif choice == '2':
             try:
-                product['total_price'] = float(input("New price: "))
+                product['total_price'] = int(float(input("New price: ")) * 100)
             except ValueError:
                 print("Invalid price!")
         elif choice == '3':
             try:
-                product['amount'] = int(input("New amount: "))
+                product['amount'] = int(float(input("New amount: ")) * 100)
             except ValueError:
                 print("Invalid amount!")
         elif choice == '4':
@@ -148,22 +186,26 @@ class Communicator:
 
     def _handle_class_edit(self, product):
         while True:
-            new_class = input("New class name: ").strip()
-            result = self.assign_by_database(new_class)
+            new_class = (0, input("New class name: ").strip())
+            result = assign_by_database(new_class[1], self.db)
             
             if result is None:  # Exact match found in DB
-                product.update({'class': new_class, 'flag': 10})
+                product.update({'class': {new_class}, 'flag': 31})
                 return
                 
             # Handle possible matches
-            _, possible_matches = result
+            possible_matches = result
             if possible_matches:
-                print(f"Did you mean: {', '.join(possible_matches)}?")
+                print(f"Did you mean: {', '.join(match[1] for match in possible_matches)}?")
                 confirm = input("Is your class a subclass of these? (y/n): ").lower()
                 if confirm == 'y':
-                    print("Please use the parent class instead")
-                    continue
+                    if len(possible_matches[1]) == 1:
+                        
+                        product.update({'class': possible_matches[0], 'flag': 30})
+                    else:
+                        print("Please use the parent class instead")
+                        continue
                 
             # If no matches or user confirms
-            product.update({'class': new_class, 'flag': 21})
+            product.update({'class': {new_class}, 'flag': 31})
             return

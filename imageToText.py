@@ -25,7 +25,7 @@ def imageToText(image_path: str) -> str:
         with open(image_path, 'rb') as image_file:
             payload = {
                 'apikey': API_KEY,
-                'language': 'cze',  # English language
+                'language': 'cze',  
                 'isOverlayRequired': False,
                 'detectOrientation': True,
             }

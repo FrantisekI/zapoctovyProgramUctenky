@@ -73,7 +73,7 @@ def analyzeText(text: str, DatabaseObject: object) -> list[dict[str, int, int, s
                     'total_price': product[1],
                     'amount': product[2],
                     'units': product[3],
-                    'class': aiClassification[i][3],
+                    'class': {(0, aiClassification[i][3])},
                     'flag': 21
                 }
     print(assigned_names)
