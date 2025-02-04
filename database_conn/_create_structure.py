@@ -1,4 +1,4 @@
-import mysql.connector # type: ignore
+import mysql.connector
 def create_tables(self):
     try:
         # Create Users table
@@ -59,6 +59,9 @@ def create_tables(self):
             ON DELETE CASCADE
         );
         """)
+        
+        self.insert_product_class("error")
+        self.hash_and_insert_custom_name("Error classifying", self.cursor.lastrowid)
 
         print("Tables created successfully!")
 

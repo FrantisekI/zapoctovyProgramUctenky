@@ -7,6 +7,7 @@ import jsonschema # type: ignore
 load_dotenv()
 
 def sortNames(receiptText: str) -> dict:
+    print('receiptText', receiptText)
     groq_model = os.environ.get("GROQ_MODEL")
     """
     This function takes a receipt text as input, sends it to the Groq API for analysis, 
@@ -55,12 +56,12 @@ Extrahuj strukturovaná data z textu účtenky do JSON formátu.
     "items": [
         {
             "name": "název produktu",
-            "total_price": "celková cena",
+            "total_price": "celková cena", {"type": "number", "multipleOf": 0.01}
             "amount": "množství",
             "units": "jednotka"
         }
     ],
-    "total": "celková částka",
+    "total": "celková částka", {"type": "number", "multipleOf": 0.01}
     "store": "název obchodu",
     "date": "datum nákupu ve formátu DD.MM.YYYY",
 }
@@ -127,7 +128,7 @@ Extrahuj strukturovaná data z textu účtenky do JSON formátu.
         response_format={"type": "json_object"}, 
         stop=None,
     )
-
+    print(completion.choices[0].message.content)
 
     schema = {
         "type": "object",

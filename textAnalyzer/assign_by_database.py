@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from database_conn import Database
 
-def assign_by_database(wordToAssign: str, DatabaseObject: 'Database', distanceProportion: int = 0.2) -> int | None:
+def assign_by_database(wordToAssign: str, DatabaseObject: 'Database', distanceProportion: int = 0.2) -> set[tuple[int, str]]:
     """if it is able to find similar word in database, it returns id of class it belongs to
     else it returns None"""
     candidates = DatabaseObject.find_candidates(wordToAssign)
@@ -10,19 +10,16 @@ def assign_by_database(wordToAssign: str, DatabaseObject: 'Database', distancePr
         return None
     distance = int(len(wordToAssign) * distanceProportion)
     # calculate Levenshtein distance
-    matchingCandidates = []
+    matchingCandidates = {}
     for candidate in candidates:
+        if candidate[1] == wordToAssign:
+            return {(DatabaseObject.select_one_get_class_from_custom_name(candidate[0]),)}
         print(candidate[1])
         if calculate_levenshtein_distance(wordToAssign, candidate[1], distance):
-            matchingCandidates.append((candidate[0], candidate[1], DatabaseObject.select_one_get_class_from_custom_name(candidate[0])))
+            matchingCandidates.add((DatabaseObject.select_one_get_class_from_custom_name(candidate[0]),))
             
     print(matchingCandidates)    
-    if matchingCandidates == []:
-        return None
-    elif len(set(candidate[2] for candidate in matchingCandidates)) == 1:
-        return matchingCandidates[0][2]
-    else:
-        return None
+    return matchingCandidates
 
 def calculate_levenshtein_distance(word1: str, word2: str, maxDistance: int) -> bool:
     m, n = len(word1), len(word2)

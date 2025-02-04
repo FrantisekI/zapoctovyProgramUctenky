@@ -13,22 +13,63 @@ groq_model = "llama-3.3-70b-versatile"
 
 def analyzeText(text: str, DatabaseObject: object):
     sortedNamesJson = {'items': [{'name': 'NP BIO DŽEM MER 270G', 'total_price': 36.9, 'amount': 1, 'units': 'Kč/ks'}, {'name': 'GOUDA PLÁTKY 50', 'total_price': 99.9, 'amount': 1, 'units': 'Kč/ks'}, {'name': 'CHLÉB ŠUMAVA1200GR', 'total_price': 42.9, 'amount': 1, 'units': 'Kč/ks'}, {'name': 'RAJČ.CHERRY OV.500G', 'total_price': 39.9, 'amount': 1, 'units': 'Kč/ks'}, {'name': 'S. KRÁL SÝRŮ PROV.BY', 'total_price': 26.9, 'amount': 1, 'units': 'Kč/ks'}, {'name': 'MANDARINKY', 'total_price': 28.4, 'amount': 0.95, 'units': 'Kč/kg'}, {'name': 'JABLKA ČERVENÁ', 'total_price': 38.6, 'amount': 0.99, 'units': 'Kč/kg'}], 'total': 313.5, 'store': 'PRODEJNA', 'date': '29.10.2024'}
-    # sortedNamesJson = sortNames(text)
+    sortedNamesJson = sortNames(text)
+    print('sorted names json', sortedNamesJson)
     products = extract_names(sortedNamesJson)
+    assigned_names = [0]*len(products)
     unableToAssignByDB = []
-    for product in products:
+    for i, product in enumerate(products):
         product_class = assign_by_database(product[0], DatabaseObject)
         print(product_class)
-        if product_class is None:
+        if (product_class is not None) and len(product_class) == 1:
+            assigned_names[i] = {
+                'name': product[0],
+                'total_price': product[1],
+                'amount': product[2],
+                'units': product[3],
+                'class': {product_class},
+                'flag': 10 # 10 means that it was assigned by database, 
+                # 20 means that it was assigned by AI, 
+                # 21 means that it was assigned by AI but than not found in database
+            }
+        else:
             unableToAssignByDB.append(product)
+            
     print(unableToAssignByDB)
     if unableToAssignByDB:
-        aiClassification = find_by_AI(unableToAssignByDB, DatabaseObject)
+        toAssignByLLM = [(unableToAssignByDB[i][4], unableToAssignByDB[i][0]) for i in range(len(unableToAssignByDB))]
+        print('toAssignByLLM', toAssignByLLM)
+        aiClassification = find_by_AI(toAssignByLLM, DatabaseObject)
         print(aiClassification)
         
-def extract_names(text: dict) -> list[str, int, int, str, int]:
+        for i, product in enumerate(unableToAssignByDB):
+            print('product', product)
+            if aiClassification[i][2] is not None:
+                assigned_names[product[4]] = {
+                    'name': product[0],
+                    'total_price': product[1],
+                    'amount': product[2],
+                    'units': product[3],
+                    'class': aiClassification[i][2],
+                    'flag': 20
+                }
+            else:
+                assigned_names[product[4]] = {
+                    'name': product[0],
+                    'total_price': product[1],
+                    'amount': product[2],
+                    'units': product[3],
+                    'class': aiClassification[i][3],
+                    'flag': 21
+                }
+    print(assigned_names)
+    return assigned_names
+        
+def extract_names(text: dict) -> list[tuple[str, int, int, str, int]]:
     """as a input it takes json with sorted names and returns list of 
-    tuples with name, total_price, amount, units and order in array"""
+    tuples with:
+    
+    name, total_price, amount, units and order in array"""
     products = text['items']
     pretty_products = []
     order = 0

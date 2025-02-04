@@ -1,11 +1,13 @@
 from random import randint, seed
 import mmh3
+import unicodedata
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .__init__ import Database
 
 def _create_shingles(self: 'Database', text: str, shingle_size: int = 3) -> set[str]:
+    """brakes text into smaller owerlaping parts of size shingle_size"""
     if len(text) < shingle_size:
         return {text}
     
@@ -16,6 +18,8 @@ def _create_shingles(self: 'Database', text: str, shingle_size: int = 3) -> set[
     return shingles
 
 def _create_signature(self: 'Database', shingles: set[str], number_of_functions: int = 6) -> list[int]:
+    """using minhash algorithm it creates signature from shingles
+    returns list of integers"""
     primarySeed = 123456
     seed(primarySeed)
     seeds = []
@@ -50,6 +54,7 @@ def _compute_bands_hash(self: 'Database', signature: list[int], rowsPerBand: int
     return bands
 
 def _marge_functions_to_compute_bands(self: 'Database', nameToIdentify: str, numberBands: int = 5, rowsPerBand: int = 2) -> list[int]:
+    """helper function: creates shingles, signature and bands"""
     shingles = self._create_shingles(nameToIdentify)
     signature = self._create_signature(shingles, numberBands * rowsPerBand)
     bands = self._compute_bands_hash(signature, rowsPerBand)
@@ -57,11 +62,17 @@ def _marge_functions_to_compute_bands(self: 'Database', nameToIdentify: str, num
     return bands
 
 def hash_and_insert_custom_name(self: 'Database', customName: str, classId: int) -> int:
+    """it takes name of product, computes bands and stores it in database
+    also stores the bands returns custom_product_id"""
+    customName = unicodedata.normalize('NFKD', customName.upper()).encode('ASCII', 'ignore').decode('ASCII')
     bands = self._marge_functions_to_compute_bands(customName)
     # print(bands)
     return self._store_custom_name_with_bands(customName, bands, classId)
 
-def find_candidates(self: 'Database', inputName: str) -> list[int, str]:
+def find_candidates(self: 'Database', inputName: str) -> list[tuple[int, str]]:
+    """as an input it takes name of product and returns list of candidates
+    that might be similar to it as a a list of tuples: (custom_product_id, name)"""
+    inputName = unicodedata.normalize('NFKD', inputName.upper()).encode('ASCII', 'ignore').decode('ASCII')
     bands = self._marge_functions_to_compute_bands(inputName)
     keys = tuple([(id, band) for id, band in enumerate(bands)])
     # print(keys)
