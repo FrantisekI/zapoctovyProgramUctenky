@@ -28,7 +28,7 @@ def find_by_AI(wordsToAssign: list[tuple[str, int]], DatabaseObject: 'Database')
     
     classifiedProducts = []
     for i, result in enumerate(results):
-        assigned_class = assign_by_database(result['classification'], DatabaseObject)
+        assigned_class = assign_by_database(result['classification'], DatabaseObject) if result['classification'] is not None else None
         classifiedProducts.append((products[i][0], products[i][1], 
                                   assigned_class, result['classification']))
     print('classifiedProducts', classifiedProducts)

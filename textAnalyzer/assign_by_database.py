@@ -10,13 +10,15 @@ def assign_by_database(wordToAssign: str, DatabaseObject: 'Database', distancePr
         return None
     distance = int(len(wordToAssign) * distanceProportion)
     # calculate Levenshtein distance
-    matchingCandidates = {}
+    matchingCandidates = set()
     for candidate in candidates:
         if candidate[1] == wordToAssign:
-            return {(DatabaseObject.select_one_get_class_from_custom_name(candidate[0]),)}
+            found = set()
+            found.add(tuple(DatabaseObject.select_one_get_class_from_custom_name(candidate[0])))
+            return found
         print(candidate[1])
         if calculate_levenshtein_distance(wordToAssign, candidate[1], distance):
-            matchingCandidates.add((DatabaseObject.select_one_get_class_from_custom_name(candidate[0]),))
+            matchingCandidates.add(tuple(DatabaseObject.select_one_get_class_from_custom_name(candidate[0])))
             
     print(matchingCandidates)    
     return matchingCandidates

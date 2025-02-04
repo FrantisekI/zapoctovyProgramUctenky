@@ -98,6 +98,8 @@ class TestDatabase(unittest.TestCase):
         shingles = self.db.find_candidates("Test Custom Name")
         # print(shingles)
         self.assertEqual(1, 1)
+        
+
 
 if __name__ == '__main__':
     unittest.main()

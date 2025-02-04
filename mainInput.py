@@ -75,7 +75,10 @@ KLIENT
 +420 776 200 517
 """
     DB = Database()
-    analyzeText(receiptText, DB)
+    analyzedReceipt = [{'name': 'NP BIO DZEM MER 270G', 'total_price': 3690, 'amount': 100, 'units': 'Kč/ks', 'class': 'džem', 'flag': 21}, {'name': 'GOUDA PLATKY 50', 'total_price': 9990, 'amount': 100, 'units': 'Kč/ks', 'class': 'sýr', 'flag': 21}, {'name': 'CHLEB SUMAVA1200GR', 'total_price': 4290, 'amount': 100, 'units': 'Kč/ks', 'class': 'chleb', 'flag': 21}, {'name': 'RAJC.CHERRY OV.500G', 'total_price': 3990, 'amount': 100, 'units': 'Kč/ks', 'class': 'rajče', 'flag': 21}, {'name': 'S. KRAL SYRU PROV.BY', 'total_price': 2690, 'amount': 100, 'units': 'Kč/ks', 'class': 'sýr', 'flag': 21}, {'name': 'MANDARINKY', 'total_price': 2840, 'amount': 95, 'units': 'Kč/kg', 'class': 'mandarinka', 'flag': 21}, {'name': 'JABLKA CERVENA', 'total_price': 3860, 'amount': 99, 'units': 'Kč/kg', 'class': 'jablko', 'flag': 21}]
+    analyzedReceipt = analyzeText(receiptText, DB)
+    
+    
     
     
 

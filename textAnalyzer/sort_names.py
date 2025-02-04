@@ -164,9 +164,9 @@ Extrahuj strukturovaná data z textu účtenky do JSON formátu.
         print(e.message)
         return {}
 
-    print(textOutput)
+    print(dict(textOutput))
 
-    return textOutput
+    return dict(textOutput)
 
 if __name__ == "__main__":
     sortNames("")
