@@ -5,6 +5,7 @@ import os
 class Communicator:
     def __init__(self, db):
         self.db = db
+        
     def get_image_path(self):
         image_path = input("Enter image path: ").strip().strip('"')
         os.makedirs("images", exist_ok=True)
@@ -23,7 +24,7 @@ class Communicator:
         store_lines = [
             f"A | Store: {store}",
             f"B | Date: {date}",
-            f"C | Total: {total/100:.2f}"
+            f"C | Total: {total/100:.2f}" if total is not None else "C | Total: not found"
         ]
         max_store_line_length = max(len(line) for line in store_lines)
         store_divider = '+' + '-' * (max_store_line_length + 2) + '+'
@@ -222,6 +223,7 @@ class Communicator:
 
     def _handle_class_edit(self, product):
         while True:
+            print('This classes already exist:', self.db.select_all_classes())
             new_class = (0, input("New class name: ").strip())
             result = assign_by_database(new_class[1], self.db)
             
@@ -235,7 +237,8 @@ class Communicator:
                 print(f"Did you mean: {', '.join(match[1] for match in possible_matches)}?")
                 confirm = input("Is your class a subclass of these? (y/n): ").lower()
                 if confirm == 'y':
-                    if len(possible_matches[1]) == 1:
+                    print(possible_matches)
+                    if len(possible_matches) == 1:
                         
                         product.update({'class': possible_matches[0], 'flag': 30})
                     else:

@@ -7,8 +7,6 @@ import jsonschema # type: ignore
 load_dotenv()
 
 def sortNames(receiptText: str) -> dict:
-    print('receiptText', receiptText)
-    groq_model = os.environ.get("GROQ_MODEL")
     """
     This function takes a receipt text as input, sends it to the Groq API for analysis, 
     and returns structured data in JSON format.
@@ -37,6 +35,8 @@ def sortNames(receiptText: str) -> dict:
         }
     }
     """
+    print('receiptText', receiptText)
+    groq_model = os.environ.get("GROQ_MODEL")
     Groq_key = os.environ.get("GROQ_API_KEY")
     Gclient = Groq(
         api_key=Groq_key,
@@ -92,7 +92,7 @@ Extrahuj strukturovaná data z textu účtenky do JSON formátu.
 - Chybějící cena/název: přeskoč položku
 - Chybějící celková částka: vrať 0 v "total"
 - Chybějící název obchodu: použij "PRODEJNA"
-- Chybějící datum/čas: vrať null v příslušném poli
+- Chybějící datum/čas: vrať 1.1.2000 v příslušném poli
 
 # PŘÍKLADY SPRÁVNÉHO VÝSTUPU
 {
@@ -126,7 +126,7 @@ Extrahuj strukturovaná data z textu účtenky do JSON formátu.
         top_p=1,
         stream=False,
         
-        # if model doesn't supoort json_object, just comment this line
+        # if model doesn't support json_object, just comment this line
         response_format={"type": "json_object"}, 
         stop=None,
     )
@@ -143,19 +143,20 @@ Extrahuj strukturovaná data z textu účtenky do JSON formátu.
                     "required": ["name", "total_price"],
                     "properties": {
                         "name": {"type": "string"},
-                        "total_price": {"type": "number"},
-                        "amount": {"type": "number"},
-                        "units": {"type": "string"}
+                        "total_price": {"type": ["number", "null"]},
+                        "amount": {"type": ["number", "null"]},
+                        "units": {"type": ["string", "null"]}
                     }
                 }
             },
-            "total": {"type": "number"},
+            "total": {"type": ["number", "null"]},
             "store": {"type": "string"},
             "date": {"type": ["string", "null"]}
         }
     }
     try:
         textOutput = completion.choices[0].message.content
+        print(textOutput, "this is how it looks")
         if type(textOutput) != dict:
             start = textOutput.find('{')
             end = textOutput.rfind('}') + 1
@@ -164,11 +165,11 @@ Extrahuj strukturovaná data z textu účtenky do JSON formátu.
             
     except jsonschema.ValidationError as e:
         print(e.message)
-        return {}
-
+        return False, textOutput
+    print('hello')
     print('iiiiiiiiiiiii', dict(textOutput))
 
-    return dict(textOutput)
+    return True, dict(textOutput)
 
 if __name__ == "__main__":
     sortNames("")

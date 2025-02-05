@@ -1,10 +1,12 @@
 from typing import TYPE_CHECKING
+import unicodedata
 if TYPE_CHECKING:
     from database_conn import Database
 
 def assign_by_database(wordToAssign: str, DatabaseObject: 'Database', distanceProportion: int = 0.2) -> set[tuple[int, str]]:
     """if it is able to find similar word in database, it returns id of class it belongs to
     else it returns None"""
+    wordToAssign = unicodedata.normalize('NFKD', wordToAssign.upper()).encode('ASCII', 'ignore').decode('ASCII')
     candidates = DatabaseObject.find_candidates(wordToAssign)
     if candidates == []:
         return None

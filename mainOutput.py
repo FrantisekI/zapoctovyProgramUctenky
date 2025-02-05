@@ -21,14 +21,19 @@ def parse_time_input(time_input: str) -> Tuple[int, TimeFrame]:
 def handle_user_input(analytics: ShoppingAnalytics) -> bool:
     """Handle user input and return whether to continue"""
     print("\nWhat would you like to know? (or type 'done' to exit)")
-    print("1. How much have I spent in last [time period]?")
-    print("2. How much have I spent on [product] in last [time period]?")
-    print("3. How much have I spent in [shop] in last [time period]?")
-    print("4. Where did I shop the most in last [time period]?")
-    print("5. What product cost me the most in last [time period]?")
-    print("6. What's the average price for [product]?")
+    possibleChoices = [    
+    "1. How much have I spent in last [time period]?",
+    "2. How much have I spent on [product] in last [time period]?",
+    "3. How much have I spent in [shop] in last [time period]?",
+    "4. Where did I shop the most in last [time period]?",
+    "5. What product cost me the most in last [time period]?",
+    "6. What's the average price for [product]?",
+    "7. List all product in class [class_name]",
+    ]
+    for choice in possibleChoices:
+        print(choice)
     
-    choice = input("\nEnter your choice (1-6): ").strip()
+    choice = input(f"\nEnter your choice (1-{len(possibleChoices)}): ").strip()
     
     if choice.lower() == 'done':
         return False
@@ -103,6 +108,15 @@ def handle_user_input(analytics: ShoppingAnalytics) -> bool:
                 print(f"Available in {stats[4]} shops")
             else:
                 print(f"\nNo data found for {product}")
+        elif choice == '7':
+            class_name = input("Enter class name: ")
+            products = analytics.db.select_all_products_by_class(class_name)
+            if products:
+                print(f"\nProducts in class {class_name}:")
+                for product in products:
+                    print(f"- {product}")
+            else:
+                print(f"\nNo products found in class {class_name}")
 
         else:
             print("\nInvalid choice. Please enter a number between 1 and 6.")

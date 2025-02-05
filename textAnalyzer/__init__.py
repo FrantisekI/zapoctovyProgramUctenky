@@ -27,17 +27,14 @@ def analyzeText(text: str, DatabaseObject: object) -> tuple[tuple[int, str], lis
     flag: 21 - tried to assign by AI but than not found in database
     """
     sortedNamesJson = {"items": [{'name': 'NP BIO DŽEM MER 270G', 'total_price': 36.9, 'amount': 1, 'units': 'Kč/ks'}, {'name': 'GOUDA PLÁTKY 50', 'total_price': 99.9, 'amount': 1, 'units': 'Kč/ks'}, {'name': 'CHLÉB ŠUMAVA1200GR', 'total_price': 42.9, 'amount': 1, 'units': 'Kč/ks'}, {'name': 'RAJČ.CHERRY OV.500G', 'total_price': 39.9, 'amount': 1, 'units': 'Kč/ks'}, {'name': 'S. KRÁL SÝRŮ PROV.BY', 'total_price': 26.9, 'amount': 1, 'units': 'Kč/ks'}, {'name': 'MANDARINKY', 'total_price': 28.4, 'amount': 0.95, 'units': 'Kč/kg'}, {'name': 'JABLKA ČERVENÁ', 'total_price': 38.6, 'amount': 0.99, 'units': 'Kč/kg'}], 'total': 313.5, 'store': 'PRODEJNA', 'date': '29.10.2024'}
-    sortedNamesJson = sortNames(text)
-    print(type(sortedNamesJson))
-    # print(sortedNamesJson[0])
-    for intem in sortedNamesJson:
-        print('first', intem)
-        for thing in intem:
-            print('second', thing)
-            
+    indicator, sortedNamesJson = sortNames(text)
+    if indicator != True:
+        return None, sortedNamesJson
+    # print(type(sortedNamesJson))
+    # print(sortedNamesJson)
     otherInfo = (sortedNamesJson.get("store"), sortedNamesJson.get("date"), sortedNamesJson.get("total"))
-    print(otherInfo)
-    print(repr(sortedNamesJson))
+    # print(otherInfo)
+    # print(repr(sortedNamesJson))
     products = extract_names(sortedNamesJson)
     assigned_names = [0]*len(products)
     unableToAssignByDB = []
@@ -98,7 +95,7 @@ def extract_names(text: dict) -> list[tuple[str, int, int, str, int]]:
     order = 0
     for product in products:
         name = unicodedata.normalize('NFKD', product.get('name').upper()).encode('ASCII', 'ignore').decode('ASCII')
-        total_price = int(product.get('total_price', 0)*100)
+        total_price = int(product.get('total_price', 0)*100) if product.get('total_price') is not None else 0
         amount = int(product.get('amount', 1)*100) if product.get('amount') is not None else 100
         units = product.get('units', 'ks')
         

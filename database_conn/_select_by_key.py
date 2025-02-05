@@ -27,3 +27,18 @@ def find_all_products(self: 'Database') -> list[tuple[int, str]]:
         FROM Product_Classes;
         """)
     return self.cursor.fetchall()
+
+def select_all_classes(self: 'Database') -> list[tuple[int, str]]:
+    self.cursor.execute("""
+        SELECT class_name
+        FROM Product_Classes;
+        """)
+    return self.cursor.fetchall()
+
+def select_all_products_by_class(self: 'Database', class_name: str) -> list[tuple[int, str]]:
+    self.cursor.execute("""
+        SELECT Bought_Items.*, Product_Classes.class_name, Shops.shop_name
+        FROM Bought_Items, Product_Classes, Shops
+        WHERE Bought_Items.product_id = Product_Classes.class_id AND Bought_Items.shop_id = Shops.shop_id AND Product_Classes.class_name = %s;
+        """, (class_name,))
+    return self.cursor.fetchall()

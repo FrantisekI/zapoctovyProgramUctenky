@@ -32,7 +32,7 @@ def main():
     imagePath = communicator.get_image_path()
     
 
-    receiptText = """
+    '''receiptText = """
 13:29 •
 Detail účtenky
 313.50Kč • 2kredity • Ibod
@@ -73,14 +73,19 @@ Cena
 2
 KLIENT
 +420 776 200 517
-"""
+"""'''
     receiptText = imageToText(imagePath)
-    print("Extracted Text:")
-    print()
-    print(receiptText)
-    analyzedReceipt = [{'name': 'NP BIO DZEM MER 270G', 'total_price': 3690, 'amount': 100, 'units': 'Kč/ks', 'class': {(0, 'džem')}, 'flag': 21}, {'name': 'GOUDA PLATKY 50', 'total_price': 9990, 'amount': 100, 'units': 'Kč/ks', 'class': {(0, 'sýr')}, 'flag': 21}, {'name': 'CHLEB SUMAVA1200GR', 'total_price': 4290, 'amount': 100, 'units': 'Kč/ks', 'class': {(0, 'chleb')}, 'flag': 21}, {'name': 'RAJC.CHERRY OV.500G', 'total_price': 3990, 'amount': 100, 'units': 'Kč/ks', 'class': {(0, 'rajče')}, 'flag': 21}, {'name': 'S. KRAL SYRU PROV.BY', 'total_price': 2690, 'amount': 100, 'units': 'Kč/ks', 'class': {(0, 'sýr')}, 'flag': 21}, {'name': 'MANDARINKY', 'total_price': 2840, 'amount': 95, 'units': 'Kč/kg', 'class': {(0, 'mandarinka')}, 'flag': 21}, {'name': 'JABLKA CERVENA', 'total_price': 3860, 'amount': 99, 'units': 'Kč/kg', 'class': {(0, 'jablko')}, 'flag': 21}]
+    # print("Extracted Text:")
+    # print()
+    # print(receiptText)
+    # analyzedReceipt = [{'name': 'NP BIO DZEM MER 270G', 'total_price': 3690, 'amount': 100, 'units': 'Kč/ks', 'class': {(0, 'džem')}, 'flag': 21}, {'name': 'GOUDA PLATKY 50', 'total_price': 9990, 'amount': 100, 'units': 'Kč/ks', 'class': {(0, 'sýr')}, 'flag': 21}, {'name': 'CHLEB SUMAVA1200GR', 'total_price': 4290, 'amount': 100, 'units': 'Kč/ks', 'class': {(0, 'chleb')}, 'flag': 21}, {'name': 'RAJC.CHERRY OV.500G', 'total_price': 3990, 'amount': 100, 'units': 'Kč/ks', 'class': {(0, 'rajče')}, 'flag': 21}, {'name': 'S. KRAL SYRU PROV.BY', 'total_price': 2690, 'amount': 100, 'units': 'Kč/ks', 'class': {(0, 'sýr')}, 'flag': 21}, {'name': 'MANDARINKY', 'total_price': 2840, 'amount': 95, 'units': 'Kč/kg', 'class': {(0, 'mandarinka')}, 'flag': 21}, {'name': 'JABLKA CERVENA', 'total_price': 3860, 'amount': 99, 'units': 'Kč/kg', 'class': {(0, 'jablko')}, 'flag': 21}]
     store_info, analyzedReceipt = analyzeText(receiptText, DB)
-    # store_info = ("Test Store", "04.02.2025", 10000)
+    if store_info is None:
+        print("something went wrong with analyzing receipt")
+        print("receipt plain text:", receiptText)
+        print("receipt analyzed:", analyzedReceipt)
+        return
+
     store_info, analyzedReceipt = communicator.edit_receipt(store_info, analyzedReceipt)
     
     print("General Info:", store_info, "\nItems:", analyzedReceipt)
