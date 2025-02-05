@@ -27,6 +27,10 @@ class Database:
     def fetch_one(self, query, args=None):
         self.cursor.execute(query, args)
         return self.cursor.fetchone()
+    def does_tables_exist(self):
+        self.cursor.execute("SHOW TABLES;")
+        tables = self.cursor.fetchall()
+        return tables
         
     if __name__ == "__main__":
         PRE = ""

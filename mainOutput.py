@@ -4,6 +4,11 @@ from dataclasses import dataclass
 import re
 from database_conn import Database
 
+def create_database():
+    DB = Database()
+    if not DB.does_tables_exist():
+        DB.create_tables()
+        DB.create_indexes()
 
 def parse_time_input(time_input: str) -> Tuple[int, TimeFrame]:
     """Parse time input string like '3 months' into value and unit"""
@@ -135,6 +140,11 @@ def main():
     print("You can analyze your shopping history here.")
     
     db = Database()
+    try:
+        create_database()
+    except Exception as e:
+        pass
+    
     analytics = ShoppingAnalytics(db)
     
     while handle_user_input(analytics):

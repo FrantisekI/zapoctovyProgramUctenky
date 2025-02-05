@@ -6,7 +6,7 @@ if TYPE_CHECKING:
 
 def _find_custom_names_by_bands(self: 'Database', keys: tuple[tuple[int, int]]) -> list[tuple[int, str]]:
     """from bands it finds custom names id and name as a list of tuples"""
-    print(keys) # comment
+    # print(keys) # comment
     self.cursor.execute(f"""
         SELECT DISTINCT c.custom_product_id, c.name
         FROM Custom_Product_Names c

@@ -1,3 +1,8 @@
+# manuals are stored in [/texty](/texty/) folder
+
+
+
+
 # Zapoctovy program uctenky
 - goal of this project is to store bought items from pictures of receipts
 
@@ -11,7 +16,7 @@
     - DB_USER = "root" / custom one
     - DB_PASSWORD (password for your database)
     - DB_DATABASE (name of your database)
-- run `python mainInput.py` to start the program
+- run `python __init__.py` to start the program
 - save picture of receipt and provide path to it
 - program will store items from receipt to database
 

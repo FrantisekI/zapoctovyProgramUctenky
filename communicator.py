@@ -14,7 +14,7 @@ class Communicator:
         with open(image_path, 'rb') as src, open(new_path, 'wb') as dst:
             dst.write(src.read())
         
-        print(f"Saved image to: {new_path}")
+        # print(f"Saved image to: {new_path}")
         return new_path
 
     
@@ -225,23 +225,22 @@ class Communicator:
         while True:
             print('This classes already exist:', ', '.join(match[0] for match in self.db.select_all_classes()))
             new_class = (0, input("New class name: ").strip())
-            print(new_class[1])
+            # print(new_class[1])
             result = assign_by_database(new_class[1], self.db)
-            print(result)
+            # print(result)
             if result is None:  # Exact match found in DB
                 product.update({'class': {new_class}, 'flag': 31})
                 return
                 
             # Handle possible matches
             possible_matches = result
-            print(possible_matches)
             if possible_matches:
                 print(f"Did you mean: {', '.join(match[1] for match in possible_matches)}?")
                 confirm = input("Is your class a subclass of these? (y/n): ").lower()
                 if confirm == 'y':
                     if len(possible_matches) == 1:
-                        
-                        product.update({'class': possible_matches[0], 'flag': 30})
+                        product.update({'class': possible_matches, 'flag': 30})
+                        return
                     else:
                         print("Please use the parent class instead")
                         continue

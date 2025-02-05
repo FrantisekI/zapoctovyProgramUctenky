@@ -3,7 +3,11 @@ from mainOutput import main as OUTPUT
 
 def main():
     while True:
-        whatHeWants = input('If you want to view what have you bought today, type "1", if you want to ann new receipt, type "2" If you want to stop write done: ')
+        print('WELCOME TO THE RECEIPT APP MAIN MENU')
+        print('If you want to view what have you bought today, type "1", ')
+        print('if you want to ann new receipt, type "2" ')
+        print('If you want to stop write "done": ', end='')
+        whatHeWants = input()
         if whatHeWants == '1':
             OUTPUT()
         elif whatHeWants == '2':

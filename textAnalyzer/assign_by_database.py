@@ -8,7 +8,7 @@ def assign_by_database(wordToAssign: str, DatabaseObject: 'Database', distancePr
     else it returns None"""
     wordToAssign = unicodedata.normalize('NFKD', wordToAssign.upper()).encode('ASCII', 'ignore').decode('ASCII')
     candidates = DatabaseObject.find_candidates(wordToAssign)
-    print(candidates)
+    # print(candidates)
     if candidates == []:
         return None
     distance = int(len(wordToAssign) * distanceProportion)

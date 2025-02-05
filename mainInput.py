@@ -23,57 +23,20 @@ from datetime import datetime
 
 def create_database():
     DB = Database()
-    DB.create_tables()
-    DB.create_indexes()
+    if not DB.does_tables_exist():
+        DB.create_tables()
+        DB.create_indexes()
+    
 
 def main():
     DB = Database()
+    try:
+        create_database()
+    except Exception as e:
+        pass
     communicator = Communicator(DB)
     imagePath = communicator.get_image_path()
     
-
-    '''receiptText = """
-13:29 •
-Detail účtenky
-313.50Kč • 2kredity • Ibod
-Díky akcím jste ušetřili 71 Kč
-Získané kredity
-• Kupóny
-Položka
-NP BIO DŽEM MER 270G
-GOUDA PLÁTKY 50
-CHLÉB ŠUMAVA1200GR
-RAJČ.CHERRY OV.500G
-S. KRÁL SÝRŮ PROV.BY
-MANDARINKY
-0.95 x 29.90 Kč /kg
-Získané kredity: 2 kredity
-JABLKA ČERVENÁ
-0.99 x 39.00 Kč /kg
-Celkem
-Získané kredity
-Získané body
-PRODEJNA
-Praha 4, Arkády Pankrác
-Na Pankráci 86, Praha 4
-platební
-900/0i
-29.10.2024
-2
-2
-Cena
-36.90 Kč
-99.90 Kč
-42.90 Kč
-39.90 Kč
-26.90 Kč
-28.40 Kč
-38.60 Kč
-313.50 Kč
-2
-KLIENT
-+420 776 200 517
-"""'''
     receiptText = imageToText(imagePath)
     # print("Extracted Text:")
     # print()
@@ -93,15 +56,26 @@ KLIENT
         shopId = shop[0][0]
     else:
         shopId = DB.insert_shop(store_info[0])
+    
+    classesInThisReceipt = []
+    classesInThisReceiptIds = []
     for item in analyzedReceipt:
         if item['flag'] % 10 == 1:
-            classId = DB.insert_product_class(next(iter(item['class']))[1])
+            if item['class'] in classesInThisReceipt:
+                classId = classesInThisReceiptIds[classesInThisReceipt.index(item['class'])]
+            else:
+                classId = DB.insert_product_class(next(iter(item['class']))[1])
+                DB.hash_and_insert_custom_name(next(iter(item['class']))[1], classId)
         else:
             classId = next(iter(item['class']))[0]
-            
+        
+        classesInThisReceipt.append(item['class'])
+        classesInThisReceiptIds.append(classId)
+        DB.hash_and_insert_custom_name(item['name'], classId)
+        
         DB.insert_bought_item(item['amount'], item['units'], item['total_price'], 
                               datetime.strptime(store_info[1], "%d.%m.%Y"), shopId, classId)
-        print(DB.find_all_products()) # comment 
+        # print(DB.find_all_products())  
     
     
     

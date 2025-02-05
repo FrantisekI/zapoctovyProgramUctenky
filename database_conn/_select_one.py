@@ -41,6 +41,9 @@ def select_one_get_class_from_custom_name(self, custom_product_id: int) -> tuple
     """by custom name id it finds it's product_class and returns 
     product_id and class_name"""
     self.cursor.execute("""
-    SELECT product_id, class_name FROM Custom_Product_Names WHERE custom_product_id = %s;
+    SELECT pc.class_id, pc.class_name 
+    FROM Product_Classes pc
+    JOIN Custom_Product_Names cu ON pc.class_id = cu.product_id
+    WHERE cu.custom_product_id = %s;
     """, (custom_product_id,))
     return self.cursor.fetchone()
