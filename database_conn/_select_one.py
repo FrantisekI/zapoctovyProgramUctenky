@@ -1,3 +1,4 @@
+import unicodedata
 def select_one_config(self, key: str) -> str:
     self.cursor.execute("""
     SELECT config_value FROM Config WHERE config_key = %s;

@@ -27,7 +27,6 @@ def create_database():
     DB.create_indexes()
 
 def main():
-    create_database()
     DB = Database()
     communicator = Communicator(DB)
     imagePath = communicator.get_image_path()
@@ -80,8 +79,8 @@ KLIENT
     print()
     print(receiptText)
     analyzedReceipt = [{'name': 'NP BIO DZEM MER 270G', 'total_price': 3690, 'amount': 100, 'units': 'Kč/ks', 'class': {(0, 'džem')}, 'flag': 21}, {'name': 'GOUDA PLATKY 50', 'total_price': 9990, 'amount': 100, 'units': 'Kč/ks', 'class': {(0, 'sýr')}, 'flag': 21}, {'name': 'CHLEB SUMAVA1200GR', 'total_price': 4290, 'amount': 100, 'units': 'Kč/ks', 'class': {(0, 'chleb')}, 'flag': 21}, {'name': 'RAJC.CHERRY OV.500G', 'total_price': 3990, 'amount': 100, 'units': 'Kč/ks', 'class': {(0, 'rajče')}, 'flag': 21}, {'name': 'S. KRAL SYRU PROV.BY', 'total_price': 2690, 'amount': 100, 'units': 'Kč/ks', 'class': {(0, 'sýr')}, 'flag': 21}, {'name': 'MANDARINKY', 'total_price': 2840, 'amount': 95, 'units': 'Kč/kg', 'class': {(0, 'mandarinka')}, 'flag': 21}, {'name': 'JABLKA CERVENA', 'total_price': 3860, 'amount': 99, 'units': 'Kč/kg', 'class': {(0, 'jablko')}, 'flag': 21}]
-    analyzedReceipt = analyzeText(receiptText, DB)
-    store_info = ("Test Store", "04.02.2025", 10000)
+    store_info, analyzedReceipt = analyzeText(receiptText, DB)
+    # store_info = ("Test Store", "04.02.2025", 10000)
     store_info, analyzedReceipt = communicator.edit_receipt(store_info, analyzedReceipt)
     
     print("General Info:", store_info, "\nItems:", analyzedReceipt)

@@ -69,6 +69,7 @@ Extrahuj strukturovaná data z textu účtenky do JSON formátu.
 # PRAVIDLA ZPRACOVÁNÍ
 
 ## Obecná pravidla:
+- Pokud od uživatele nedostaneš žádný text účtenky, vrať všude null nebo prázdný seznam
 - Zachovej přesně původní názvy produktů
 - Všechny ceny převeď na formát s desetinnou tečkou a "Kč"
 - Ignoruj informace o věrnostních bodech/kreditech
@@ -129,7 +130,7 @@ Extrahuj strukturovaná data z textu účtenky do JSON formátu.
         response_format={"type": "json_object"}, 
         stop=None,
     )
-    print(completion.choices[0].message.content)
+    # print(completion.choices[0].message.content)
 
     schema = {
         "type": "object",
@@ -142,13 +143,13 @@ Extrahuj strukturovaná data z textu účtenky do JSON formátu.
                     "required": ["name", "total_price"],
                     "properties": {
                         "name": {"type": "string"},
-                        "total_price": {"type": "number", "multipleOf": 0.01},
-                        "amount": {"type": "number", "multipleOf": 0.01},
+                        "total_price": {"type": "number"},
+                        "amount": {"type": "number"},
                         "units": {"type": "string"}
                     }
                 }
             },
-            "total": {"type": "number", "multipleOf": 0.01},
+            "total": {"type": "number"},
             "store": {"type": "string"},
             "date": {"type": ["string", "null"]}
         }
@@ -165,7 +166,7 @@ Extrahuj strukturovaná data z textu účtenky do JSON formátu.
         print(e.message)
         return {}
 
-    print(dict(textOutput))
+    print('iiiiiiiiiiiii', dict(textOutput))
 
     return dict(textOutput)
 

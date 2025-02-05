@@ -1,3 +1,4 @@
+import unicodedata
 def insert_config(self, key: str, value: str):
     
     self.cursor.execute("""
@@ -7,6 +8,7 @@ def insert_config(self, key: str, value: str):
     self.conn.commit()
 
 def insert_shop(self, shop_name: str) -> int:
+    shop_name = str(unicodedata.normalize('NFKD', shop_name.upper()).encode('ASCII', 'ignore').decode('ASCII'))
     self.cursor.execute("""
     INSERT INTO Shops (shop_name)
     VALUES (%s);
@@ -18,6 +20,7 @@ def insert_shop(self, shop_name: str) -> int:
     return shop_id
 
 def insert_product_class(self, class_name: str) -> int:
+    class_name= str(unicodedata.normalize('NFKD', class_name.upper()).encode('ASCII', 'ignore').decode('ASCII'))
     self.cursor.execute("""
     INSERT INTO Product_Classes (class_name)
     VALUES (%s);
@@ -45,6 +48,7 @@ def insert_bought_item(self, amount: int, units: str, price: int, date_time, sho
     return bought_id
 
 def insert_custom_product_name(self, name: str, product_id: int) -> int:
+    name = str(unicodedata.normalize('NFKD', name.upper()).encode('ASCII', 'ignore').decode('ASCII'))
     self.cursor.execute("""
     INSERT INTO Custom_Product_Names (name, product_id)
     VALUES (%s, %s);

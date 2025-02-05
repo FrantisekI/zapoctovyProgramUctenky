@@ -21,7 +21,6 @@ def imageToText(image_path: str) -> str:
     API_URL = 'https://api.ocr.space/parse/image'
     
     try:
-        # Prepare the files and payload
         with open(image_path, 'rb') as image_file:
             payload = {
                 'apikey': API_KEY,
@@ -33,15 +32,12 @@ def imageToText(image_path: str) -> str:
             files = {
                 'file': image_file
             }
-            
-            # Make POST request to the API
+
             response = requests.post(API_URL, files=files, data=payload)
-            response.raise_for_status()  # Raise exception for bad status codes
-            
-            # Parse response
+            response.raise_for_status()  
             result = response.json()
             
-            if result['OCRExitCode'] == 1:  # Success
+            if result['OCRExitCode'] == 1:
                 text = ' '.join([page['ParsedText'] for page in result['ParsedResults']])
                 return text.strip()
             else:
@@ -53,7 +49,6 @@ def imageToText(image_path: str) -> str:
         return ""
 
 if __name__ == "__main__":
-    # Test the function
     sample_path = input("Enter image path: ").strip()
     if os.path.exists(sample_path):
         text = imageToText(sample_path)

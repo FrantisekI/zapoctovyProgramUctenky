@@ -7,14 +7,15 @@ class Communicator:
         self.db = db
     def get_image_path(self):
         image_path = input("Enter image path: ").strip().strip('"')
+        os.makedirs("images", exist_ok=True)
         new_filename = f"receipt_{datetime.now().strftime('%Y%m%d_%H%M%S')}{os.path.splitext(image_path)[1]}"
         new_path = os.path.join("images", new_filename)
         with open(image_path, 'rb') as src, open(new_path, 'wb') as dst:
             dst.write(src.read())
-            
+        
         print(f"Saved image to: {new_path}")
         return new_path
-    
+
     
     def pretty_print(self, store_info_tuple, assigned_products):
         store, date, total = store_info_tuple
@@ -38,6 +39,7 @@ class Communicator:
         ai_rows = []
         
         for idx, product in enumerate(assigned_products, 1):
+            print('product', product)
             source = self._get_source(product['flag'])
             if product['flag'] in [20, 21]:
                 ai_rows.append(str(idx))
@@ -117,7 +119,7 @@ class Communicator:
         
         while True:
             self.pretty_print(tuple(edited_store), edited_products)
-            choice = input("\nEnter item to edit (A-C/Number) or 'done': ").strip().lower()
+            choice = input("\nEnter item to edit (A-C/Number), '+' to add, '-' to remove, or 'done': ").strip().lower()
             
             if choice == 'done':
                 # Check if all edited products have a class length of 1
@@ -128,10 +130,26 @@ class Communicator:
                     except ValueError:
                         print("Invalid date format! Please use DD.MM.YYYY.")
                         continue
-                    return tuple(edited_store), edited_products
+                    return tuple(edited_store), edited_products if edited_products is not None else []
                 else:
                     print("All products must have exactly one class assigned.")
                     continue
+            
+            if choice == '+':
+                self._add_new_product(edited_products)
+                continue
+
+            if choice == '-':
+                product_num = input("Enter product number to remove: ").strip()
+                try:
+                    idx = int(product_num) - 1
+                    if 0 <= idx < len(edited_products):
+                        del edited_products[idx]
+                    else:
+                        print("Invalid product number!")
+                except ValueError:
+                    print("Invalid input!")
+                continue
             
             # Edit store information
             if choice in ['a', 'b', 'c']:
@@ -144,7 +162,11 @@ class Communicator:
                     except ValueError:
                         print("Invalid date format! Please use DD.MM.YYYY.")
                         continue
-                    
+                if idx == 2:
+                    try:
+                        int(float(new_val) * 100)
+                    except ValueError:
+                        print("Invalid price!")
                 edited_store[idx] = new_val
                 continue
             
@@ -183,6 +205,20 @@ class Communicator:
             self._handle_class_edit(product)
         else:
             print("Invalid choice")
+
+    def _add_new_product(self, products):
+        new_product = {
+            'name': input("Enter product name: ").strip(),
+            'total_price': int(float(input("Enter price: ")) * 100),
+            'amount': int(float(input("Enter amount: ")) * 100),
+            'units': input("Enter units: ").strip(),
+            'flag': 30,
+            'class': None
+        }
+        
+        # Handle class assignment
+        self._handle_class_edit(new_product)
+        products.append(new_product)
 
     def _handle_class_edit(self, product):
         while True:
