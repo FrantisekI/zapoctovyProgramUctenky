@@ -22,7 +22,7 @@ def find_by_AI(wordsToAssign: list[tuple[str, int]], DatabaseObject: 'Database')
     """
     # the tuple is (order, name)
     products = wordsToAssign
-    print('products in assigned by ai', products)
+    # print('products in assigned by ai', products)
     client = AsyncGroq(api_key=os.environ.get("GROQ_API_KEY"))
     results = asyncio.run(_classify_products(client, products))
     
@@ -31,7 +31,7 @@ def find_by_AI(wordsToAssign: list[tuple[str, int]], DatabaseObject: 'Database')
         assigned_class = assign_by_database(result['classification'], DatabaseObject) if result['classification'] is not None else None
         classifiedProducts.append((products[i][0], products[i][1], 
                                   assigned_class, result['classification']))
-    print('classifiedProducts', classifiedProducts)
+    # print('classifiedProducts', classifiedProducts)
     return classifiedProducts
 
 async def _classify_products(client: 'AsyncGroq', products: list[tuple[int, str]]) -> list[dict[int, str, str]]:
@@ -112,11 +112,11 @@ Je lepší vrátit null než hádat.
         simplified_product = json.loads(chat_completion.choices[0].message.content)
         product_name = simplified_product.get('name', None)
         
-        print({
-            'index': index,
-            'product': product, 
-            'classification': product_name
-        })
+        # print({ # comment
+        #     'index': index,
+        #     'product': product, 
+        #     'classification': product_name
+        # })
         return {
             'index': index,
             'product': product, 

@@ -40,7 +40,7 @@ class Communicator:
         ai_rows = []
         
         for idx, product in enumerate(assigned_products, 1):
-            print('product', product)
+            # print('product', product)
             source = self._get_source(product['flag'])
             if product['flag'] in [20, 21]:
                 ai_rows.append(str(idx))
@@ -223,21 +223,22 @@ class Communicator:
 
     def _handle_class_edit(self, product):
         while True:
-            print('This classes already exist:', self.db.select_all_classes())
+            print('This classes already exist:', ', '.join(match[0] for match in self.db.select_all_classes()))
             new_class = (0, input("New class name: ").strip())
+            print(new_class[1])
             result = assign_by_database(new_class[1], self.db)
-            
+            print(result)
             if result is None:  # Exact match found in DB
                 product.update({'class': {new_class}, 'flag': 31})
                 return
                 
             # Handle possible matches
             possible_matches = result
+            print(possible_matches)
             if possible_matches:
                 print(f"Did you mean: {', '.join(match[1] for match in possible_matches)}?")
                 confirm = input("Is your class a subclass of these? (y/n): ").lower()
                 if confirm == 'y':
-                    print(possible_matches)
                     if len(possible_matches) == 1:
                         
                         product.update({'class': possible_matches[0], 'flag': 30})
@@ -245,6 +246,5 @@ class Communicator:
                         print("Please use the parent class instead")
                         continue
                 
-            # If no matches or user confirms
             product.update({'class': {new_class}, 'flag': 31})
             return

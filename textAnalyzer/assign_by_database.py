@@ -8,6 +8,7 @@ def assign_by_database(wordToAssign: str, DatabaseObject: 'Database', distancePr
     else it returns None"""
     wordToAssign = unicodedata.normalize('NFKD', wordToAssign.upper()).encode('ASCII', 'ignore').decode('ASCII')
     candidates = DatabaseObject.find_candidates(wordToAssign)
+    print(candidates)
     if candidates == []:
         return None
     distance = int(len(wordToAssign) * distanceProportion)
@@ -18,11 +19,11 @@ def assign_by_database(wordToAssign: str, DatabaseObject: 'Database', distancePr
             found = set()
             found.add(tuple(DatabaseObject.select_one_get_class_from_custom_name(candidate[0])))
             return found
-        print(candidate[1])
+        # print(candidate[1])
         if calculate_levenshtein_distance(wordToAssign, candidate[1], distance):
             matchingCandidates.add(tuple(DatabaseObject.select_one_get_class_from_custom_name(candidate[0])))
             
-    print(matchingCandidates)    
+    # print(matchingCandidates)    
     return matchingCandidates
 
 def calculate_levenshtein_distance(word1: str, word2: str, maxDistance: int) -> bool:

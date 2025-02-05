@@ -38,9 +38,10 @@ def analyzeText(text: str, DatabaseObject: object) -> tuple[tuple[int, str], lis
     products = extract_names(sortedNamesJson)
     assigned_names = [0]*len(products)
     unableToAssignByDB = []
+    
     for i, product in enumerate(products):
         product_class = assign_by_database(product[0], DatabaseObject)
-        print(product_class)
+        # print(product_class)
         if (product_class is not None) and len(product_class) == 1:
             assigned_names[i] = {
                 'name': product[0],
@@ -55,15 +56,15 @@ def analyzeText(text: str, DatabaseObject: object) -> tuple[tuple[int, str], lis
         else:
             unableToAssignByDB.append(product)
             
-    print(unableToAssignByDB)
+    # print(unableToAssignByDB)
     if unableToAssignByDB:
         toAssignByLLM = [(unableToAssignByDB[i][4], unableToAssignByDB[i][0]) for i in range(len(unableToAssignByDB))]
-        print('toAssignByLLM', toAssignByLLM)
+        # print('toAssignByLLM', toAssignByLLM)
         aiClassification = find_by_AI(toAssignByLLM, DatabaseObject)
-        print(aiClassification)
+        # print(aiClassification)
         
         for i, product in enumerate(unableToAssignByDB):
-            print('product', product)
+            # print('product', product)
             if aiClassification[i][2] is not None:
                 assigned_names[product[4]] = {
                     'name': product[0],
@@ -82,7 +83,7 @@ def analyzeText(text: str, DatabaseObject: object) -> tuple[tuple[int, str], lis
                     'class': {(0, aiClassification[i][3])},
                     'flag': 21
                 }
-    print(assigned_names)
+    # print(assigned_names) # comment 
     return otherInfo, assigned_names
         
 def extract_names(text: dict) -> list[tuple[str, int, int, str, int]]:
@@ -101,7 +102,7 @@ def extract_names(text: dict) -> list[tuple[str, int, int, str, int]]:
         
         pretty_products.append((name, total_price, amount, units, order))
         order += 1
-    print('pretty_products', pretty_products)
+    # print('pretty_products', pretty_products)
     return pretty_products
 
 if __name__ == "__main__":

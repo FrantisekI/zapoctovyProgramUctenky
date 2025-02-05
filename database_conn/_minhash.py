@@ -15,6 +15,7 @@ def _create_shingles(self: 'Database', text: str, shingle_size: int = 3) -> set[
     for i in range(len(text) - shingle_size + 1):
         shingle = text[i:i + shingle_size]
         shingles.add(shingle)
+    # print(shingles) # comment
     return shingles
 
 def _create_signature(self: 'Database', shingles: set[str], number_of_functions: int = 6) -> list[int]:
@@ -73,9 +74,9 @@ def find_candidates(self: 'Database', inputName: str) -> list[tuple[int, str]]:
     """as an input it takes name of product and returns list of candidates
     that might be similar to it as a a list of tuples: (custom_product_id, name)"""
     inputName = unicodedata.normalize('NFKD', inputName.upper()).encode('ASCII', 'ignore').decode('ASCII')
+    # print(inputName) # comment
     bands = self._marge_functions_to_compute_bands(inputName)
     keys = tuple([(id, band) for id, band in enumerate(bands)])
-    # print(keys)
     
     return self._find_custom_names_by_bands(keys)
     

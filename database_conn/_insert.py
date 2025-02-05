@@ -36,7 +36,7 @@ def insert_bought_item(self, amount: int, units: str, price: int, date_time, sho
     '''Inserts a bought item into the database. with parameters you see in the function signature.
     
     amount and price are in cents. - to get in czech crowns, divide by 100.'''
-    print(amount, units, price, date_time, shop_id, product_id)
+    # print(amount, units, price, date_time, shop_id, product_id)
     self.cursor.execute("""
     INSERT INTO Bought_Items (amount, units, price, date_time, shop_id, product_id)
     VALUES (%s, %s, %s, %s, %s, %s);

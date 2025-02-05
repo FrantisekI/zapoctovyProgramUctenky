@@ -14,7 +14,7 @@ def parse_time_input(time_input: str) -> Tuple[int, TimeFrame]:
     value, unit = match.groups()
     # Handle plural forms
     unit = unit.rstrip('s').lower()
-    print(int(value), TimeFrame.from_string(unit))
+    # print(int(value), TimeFrame.from_string(unit))
     return int(value), TimeFrame.from_string(unit)
 
 

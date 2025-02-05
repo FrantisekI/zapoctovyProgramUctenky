@@ -101,7 +101,7 @@ KLIENT
             
         DB.insert_bought_item(item['amount'], item['units'], item['total_price'], 
                               datetime.strptime(store_info[1], "%d.%m.%Y"), shopId, classId)
-        print(DB.find_all_products())
+        print(DB.find_all_products()) # comment 
     
     
     

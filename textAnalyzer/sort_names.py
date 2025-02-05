@@ -35,7 +35,7 @@ def sortNames(receiptText: str) -> dict:
         }
     }
     """
-    print('receiptText', receiptText)
+    # print('receiptText', receiptText)
     groq_model = os.environ.get("GROQ_MODEL")
     Groq_key = os.environ.get("GROQ_API_KEY")
     Gclient = Groq(
@@ -84,7 +84,8 @@ Extrahuj strukturovaná data z textu účtenky do JSON formátu.
    - units: cena za jednotku (např. "Kč/kg")
 
 2. Kusové zboží:
-   - amount: počet kusů jako číslo
+   - amount: počet kusů jako číslo, většinou, pokud není za číslem uvedeno x nebo ks,
+   obzvlášť pokud je to zboží v závorce, tak ho bude 1 kus
    - total_price: celková cena za všechny kusy
    - units: jednotka (např. "Kč/ks")
 
@@ -156,7 +157,7 @@ Extrahuj strukturovaná data z textu účtenky do JSON formátu.
     }
     try:
         textOutput = completion.choices[0].message.content
-        print(textOutput, "this is how it looks")
+        # print(textOutput, "this is how it looks")
         if type(textOutput) != dict:
             start = textOutput.find('{')
             end = textOutput.rfind('}') + 1
@@ -166,8 +167,7 @@ Extrahuj strukturovaná data z textu účtenky do JSON formátu.
     except jsonschema.ValidationError as e:
         print(e.message)
         return False, textOutput
-    print('hello')
-    print('iiiiiiiiiiiii', dict(textOutput))
+    
 
     return True, dict(textOutput)
 

@@ -149,7 +149,7 @@ class ShoppingAnalytics:
             ORDER BY total_cost DESC
             LIMIT 1;
         """
-        print(self.db.fetch_one(query, (start_date,)))
+        # print(self.db.fetch_one(query, (start_date,)))
         return self.db.fetch_one(query, (start_date,))
 
     def get_product_price_stats(self, product_name: str) -> Dict:
