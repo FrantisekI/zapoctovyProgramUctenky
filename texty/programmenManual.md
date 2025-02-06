@@ -22,3 +22,42 @@
 ### `mainOutput.py`:
 - presents user with possibilities to what he can see and than runs query in database to find it (sadly I wrote it so that if you want to change type of database, you would need to change queries here also)
 
+### This is how scheme of MySQL database looks like:
+
+```mermaid
+erDiagram
+    SHOPS {
+        STRING name
+    }
+    PRODUCT_CLASSES {
+        STRING name
+    }
+    CUSTOM_PRODUCT_NAMES {
+        STRING name
+        INDEX product_id
+        INDEX custom_product_id
+    }
+    BANDS {
+        INT id_custom_name
+        INT band_id
+        BIGINT band_hash
+        INDEX band_id-band_hash
+    }
+    BOUGHT_ITEMS {
+        FLOAT amount
+        STRING units
+        FLOAT price
+        DATETIME date_time
+        INT shop_id
+        INT product_id
+        INDEX date_time
+        INDEX shop_id
+        INDEX product_id
+    }
+
+    SHOPS ||--o{ BOUGHT_ITEMS : refers_to
+    PRODUCT_CLASSES ||--o{ BOUGHT_ITEMS : categorized_by
+    PRODUCT_CLASSES ||--o{ CUSTOM_PRODUCT_NAMES : includes
+    CUSTOM_PRODUCT_NAMES ||--o{ BANDS : has
+    
+```
