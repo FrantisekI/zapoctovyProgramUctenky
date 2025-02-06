@@ -32,7 +32,8 @@ def find_all_products(self: 'Database') -> list[tuple[int, str]]:
 def select_all_classes(self: 'Database') -> list[tuple[int, str]]:
     self.cursor.execute("""
         SELECT class_name
-        FROM Product_Classes;
+        FROM Product_Classes
+        ORDER BY class_id;
         """)
     return self.cursor.fetchall()
 
