@@ -48,7 +48,7 @@ def analyzeText(text: str, DatabaseObject: object) -> tuple[tuple[int, str], lis
                 'total_price': product[1],
                 'amount': product[2],
                 'units': product[3],
-                'class': {product_class},
+                'class': product_class,
                 'flag': 10 # 10 means that it was assigned by database, 
                 # 20 means that it was assigned by AI, 
                 # 21 means that it was assigned by AI but than not found in database
